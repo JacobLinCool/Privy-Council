@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../src/lib/prisma-zod"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  name           String
+  bio            String
+  admin          Boolean   @default(false)
+  created        DateTime  @default(now())
+  updated        DateTime  @updatedAt
+  namespace      Namespace @relation("user_ns", fields: [namespace_name], references: [name])
+  namespace_name String    @unique
+  teams          Team[]    @relation("member_of")
+  logs           Log[]     @relation("done_by")
+}
+
+model Team {
+  id             Int       @id @default(autoincrement())
+  name           String
+  bio            String
+  created        DateTime  @default(now())
+  updated        DateTime  @updatedAt
+  namespace      Namespace @relation("team_ns", fields: [namespace_name], references: [name])
+  namespace_name String    @unique
+  users          User[]    @relation("member_of")
+  logs           Log[]     @relation("logging")
+}
+
+model Log {
+  id      Int      @id @default(autoincrement())
+  content String
+  time    DateTime
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  team_id Int?
+  team    Team?    @relation("logging", fields: [team_id], references: [id])
+  user_id Int?
+  user    User?    @relation("done_by", fields: [user_id], references: [id])
+}
+
+model Namespace {
+  name          String         @id
+  created       DateTime       @default(now())
+  updated       DateTime       @updatedAt
+  user          User?          @relation("user_ns")
+  team          Team?          @relation("team_ns")
+  councilors    Councilor[]    @relation("ns_councilor")
+  committees    Committee[]    @relation("ns_committee")
+  conversations Conversation[] @relation("ns_conversation")
+  libraries     Library[]      @relation("ns_library")
+  user_id       Int            @unique
+  team_id       Int            @unique
+}
+
+model Councilor {
+  id             Int         @id @default(autoincrement())
+  name           String
+  visibility     Boolean
+  model          String
+  trait          String
+  created        DateTime    @default(now())
+  updated        DateTime    @updatedAt
+  namespace_name String
+  namespace      Namespace   @relation("ns_councilor", fields: [namespace_name], references: [name])
+  committees     Committee[] @relation("in_committee")
+}
+
+model Committee {
+  id             Int            @id @default(autoincrement())
+  name           String
+  visibility     Boolean
+  created        DateTime       @default(now())
+  updated        DateTime       @updatedAt
+  namespace_name String
+  namespace      Namespace      @relation("ns_committee", fields: [namespace_name], references: [name])
+  councilors     Councilor[]    @relation("in_committee")
+  conversations  Conversation[] @relation("generated_by")
+  rules          Rule[]         @relation("policy_of")
+}
+
+model Rule {
+  id           Int       @id @default(autoincrement())
+  content      String
+  created      DateTime  @default(now())
+  updated      DateTime  @updatedAt
+  committee_id Int
+  committee    Committee @relation("policy_of", fields: [committee_id], references: [id])
+}
+
+model Conversation {
+  id             Int       @id @default(autoincrement())
+  input          String
+  immediate      String
+  final          String
+  created        DateTime  @default(now())
+  updated        DateTime  @updatedAt
+  namespace_name String
+  namespace      Namespace @relation("ns_conversation", fields: [namespace_name], references: [name])
+  committee_id   Int
+  committee      Committee @relation("generated_by", fields: [committee_id], references: [id])
+  tags           Tag[]     @relation("tagged")
+}
+
+model Library {
+  id             Int       @id @default(autoincrement())
+  name           String
+  visibility     Boolean
+  created        DateTime  @default(now())
+  updated        DateTime  @updatedAt
+  namespace_name String
+  namespace      Namespace @relation("ns_library", fields: [namespace_name], references: [name])
+  data           Data[]    @relation("contains")
+}
+
+model Data {
+  id         Int      @id @default(autoincrement())
+  content    String
+  created    DateTime @default(now())
+  updated    DateTime @updatedAt
+  library_id Int
+  library    Library  @relation("contains", fields: [library_id], references: [id])
+}
+
+model Tag {
+  id            Int            @id @default(autoincrement())
+  content       String
+  created       DateTime       @default(now())
+  updated       DateTime       @updatedAt
+  conversations Conversation[] @relation("tagged")
+}
