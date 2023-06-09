@@ -1,4 +1,17 @@
 {
+	"auth": {
+		"invalid-token": "Invalid Token",
+		"signing-in": "Signing In"
+	},
+	"intro": {
+		"enter-your-email": "Enter your email",
+		"join": "Join",
+		"try-it-out": "Try It Out"
+	},
+	"nav": {
+		"home": "Home",
+		"trending": "Trending"
+	},
 	"welcome": "Welcome to Privy Council LLM",
 	"with-tech": "Privy Council LLM is an AI dialogue generation platform that enables users to create and manage multiple AI characters for more reliable and complex conversations."
 }

@@ -1,4 +1,17 @@
 {
+	"auth": {
+		"invalid-token": "授權無效",
+		"signing-in": "登入中"
+	},
+	"intro": {
+		"enter-your-email": "輸入你的電子郵件地址",
+		"join": "加入",
+		"try-it-out": "試試看"
+	},
+	"nav": {
+		"home": "首頁",
+		"trending": "熱門"
+	},
 	"welcome": "歡迎使用 Privy Council LLM",
 	"with-tech": "Privy Council LLM 是一個 AI 對話生成平台，允許使用者建立和管理多個 AI 角色，以進行更可靠和複雜的對話。"
 }
