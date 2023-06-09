@@ -3,7 +3,12 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			token: {
+				/** The user's email */
+				sub?: string;
+			};
+		}
 		// interface PageData {}
 		// interface Platform {}
 	}

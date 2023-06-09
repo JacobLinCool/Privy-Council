@@ -1,4 +1,8 @@
-lockfileVersion: "6.0"
+lockfileVersion: "6.1"
+
+settings:
+    autoInstallPeers: true
+    excludeLinksFromLockfile: false
 
 dependencies:
     "@prisma/client":
@@ -81,6 +85,9 @@ devDependencies:
     svelte-i18n:
         specifier: ^3.6.0
         version: 3.6.0(svelte@3.59.1)
+    sveltekit-jwt:
+        specifier: ^0.2.0
+        version: 0.2.0(svelte@3.59.1)
     tailwindcss:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1337,6 +1344,13 @@ packages:
             prettier: 2.8.8
         transitivePeerDependencies:
             - supports-color
+        dev: true
+
+    /@tsndr/cloudflare-worker-jwt@2.2.1:
+        resolution:
+            {
+                integrity: sha512-yYxjmag5AXXs7FDCUlse8cCTQlug3fbrqUb4/s4kvdauOg5wq2V6BayHD/OUWOGmgohefFRqu4vA5phU3+Cyng==,
+            }
         dev: true
 
     /@types/chai-subset@1.3.3:
@@ -6756,6 +6770,18 @@ packages:
                 integrity: sha512-pKj8fEBmqf6mq3/NfrB9SLtcJcUvjYSWyePlfCqN9gujLB25RitWK8PvFzlwim6hD/We35KbPlRteuA6rnPGcQ==,
             }
         engines: { node: ">= 8" }
+        dev: true
+
+    /sveltekit-jwt@0.2.0(svelte@3.59.1):
+        resolution:
+            {
+                integrity: sha512-aDrGtRlRicbppBGPW/hhHv4pD3BAGe5ZkeFoYbI1VF4mnLHjqKyDmboNv/RZ4cm661boFnEFxl2ZHiBZunhstA==,
+            }
+        peerDependencies:
+            svelte: ^3.54.0
+        dependencies:
+            "@tsndr/cloudflare-worker-jwt": 2.2.1
+            svelte: 3.59.1
         dev: true
 
     /tailwindcss@3.3.2:
