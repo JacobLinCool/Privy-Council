@@ -15,6 +15,17 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!locals?.token?.sub) {
 		throw redirect(302, "/");
 	}
+	// find if params.namespace is in namespace
+	const namespace = await prisma.namespace.count({
+		where: {
+			name: params.namespace,
+		},
+	});
+	// if namespace is NULL, then throw error
+	if (namespace === 0) {
+		// redirect to /@[params.namespace]
+		throw redirect(302, "/");
+	}
 
 	// return all information belongs to user
 	const userInfo = await prisma.user.findUnique({

@@ -3,6 +3,7 @@ import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
 
 export const load: PageServerLoad = async ({ locals }) => {
+	console.log(locals);
 	if (!locals?.token?.sub) {
 		throw redirect(302, "/");
 	}
