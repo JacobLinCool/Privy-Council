@@ -16,29 +16,40 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
   name           String
   bio            String
-  admin          Boolean   @default(false)
-  created        DateTime  @default(now())
-  updated        DateTime  @updatedAt
-  namespace      Namespace @relation("user_ns", fields: [namespace_name], references: [name])
-  namespace_name String    @unique
-  teams          Team[]    @relation("member_of")
-  logs           Log[]     @relation("done_by")
+  admin          Boolean      @default(false)
+  created        DateTime     @default(now())
+  updated        DateTime     @updatedAt
+  namespace      Namespace    @relation("user_ns", fields: [namespace_name], references: [name])
+  namespace_name String       @unique
+  logs           Log[]        @relation("done_by")
+  teams          TeamMember[] @relation("teams")
 }
 
 model Team {
-  id             Int       @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   name           String
   bio            String
-  created        DateTime  @default(now())
-  updated        DateTime  @updatedAt
-  namespace      Namespace @relation("team_ns", fields: [namespace_name], references: [name])
-  namespace_name String    @unique
-  users          User[]    @relation("member_of")
-  logs           Log[]     @relation("logging")
+  created        DateTime     @default(now())
+  updated        DateTime     @updatedAt
+  namespace      Namespace    @relation("team_ns", fields: [namespace_name], references: [name])
+  namespace_name String       @unique
+  logs           Log[]        @relation("logging")
+  members        TeamMember[] @relation("teams")
+}
+
+model TeamMember {
+  id      Int      @id @default(autoincrement())
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  role    String   @default("member")
+  team_id Int
+  user_id Int
+  team    Team     @relation("teams", fields: [team_id], references: [id])
+  user    User     @relation("teams", fields: [user_id], references: [id])
 }
 
 model Log {
