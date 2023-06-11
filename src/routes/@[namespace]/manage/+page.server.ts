@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import { verifyOwnNamespace } from "$lib/server/verify";
 
 /*
 output: {
@@ -14,6 +15,9 @@ output: {
 export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!locals?.token?.sub) {
 		throw redirect(302, "/");
+	}
+	if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
+		throw redirect(302, "/@" + params.namespace);
 	}
 	// find if params.namespace is in namespace
 	const namespace = await prisma.namespace.count({
@@ -44,27 +48,23 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			teams: true,
 		},
 	});
-	console.log("userInfo:", userInfo);
+	//console.log("userInfo:", userInfo);
 
 	if (userInfo?.namespace_name != params.namespace) {
-		// find if params.namespace is in teams
-		const team = await prisma.user.findFirst({
+		// find if params.namespace is in users's teams.team.namespace_name
+		const team = await prisma.team.findUnique({
+			where: {
+				namespace_name: params.namespace,
+			},
 			select: {
-				teams: {
-					where: {
-						namespace_name: params.namespace,
-					},
-					select: {
-						users: true,
+				members: {
+					include: {
+						user: true,
 					},
 				},
 			},
 		});
-		// if team is NULL, then throw error
-		if (team?.teams.length === 0) {
-			// redirect to /@[params.namespace]
-			throw redirect(302, "/@" + params.namespace);
-		}
+		//console.log("team:", team);
 
 		// return all information belongs to the team
 		const info = await prisma.namespace.findUnique({
@@ -84,9 +84,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			committees: info?.committees,
 			conversations: info?.conversations,
 			libraries: info?.libraries,
-			members: team?.teams[0].users,
+			members: team?.members,
 		};
-		console.log(updatedJsonObject);
+		//console.log(updatedJsonObject);
 		return { updatedJsonObject };
 	} else {
 		const updatedJsonObject = {
@@ -96,7 +96,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			libraries: userInfo?.namespace.libraries,
 			teams: userInfo?.teams,
 		};
-		console.log(updatedJsonObject);
+		//console.log(updatedJsonObject);
 		return { updatedJsonObject };
 	}
 };

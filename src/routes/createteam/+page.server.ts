@@ -25,35 +25,26 @@ export const actions = {
 			throw redirect(302, "/createteam");
 		}
 
-		// create the namespace
-		const namespace = await prisma.namespace.create({
+		const teamCreate = await prisma.teamMember.create({
 			data: {
-				name: name,
-			},
-		});
-
-		// create the team
-		const team = await prisma.team.create({
-			data: {
-				name: name,
-				bio: "",
-				namespace_name: name,
-			},
-		});
-
-		// add the user to the team
-		const user = await prisma.user.update({
-			where: {
-				email: locals.token.sub,
-			},
-			data: {
-				teams: {
-					connect: {
-						id: team.id,
+				role: "admin",
+				user: {
+					connect: { email: locals?.token?.sub },
+				},
+				team: {
+					create: {
+						name: name,
+						bio: "",
+						namespace: {
+							create: {
+								name: name,
+							},
+						},
 					},
 				},
 			},
 		});
+		console.log("teamCreate:", teamCreate);
 
 		throw redirect(302, "/@" + name + "/manage");
 	},

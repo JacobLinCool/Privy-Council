@@ -23,4 +23,11 @@
 		</label>
 		<button>Save</button>
 	</form>
+	<form method="POST" action="?/clone">
+		<label>
+			Namespace
+			<input name="namespace" type="text" />
+		</label>
+		<button>Clone</button>
+	</form>
 </div>

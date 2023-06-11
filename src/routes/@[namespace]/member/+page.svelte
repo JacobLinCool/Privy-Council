@@ -5,5 +5,14 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<pre><code>{JSON.stringify(data.user, null, 4)}</code></pre>
+	<form method="POST" action="?/leave">
+		<label>
+			Email
+			<input name="email" type="text" />
+		</label>
+		<button>Leave</button>
+	</form>
+	<form method="POST" action="?/deleteteam">
+		<button>Delete Team</button>
+	</form>
 </div>

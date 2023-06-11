@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import { verifyOwnNamespace } from "$lib/server/verify";
 
 /*
 output: {
@@ -16,6 +17,10 @@ output: {
 export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!locals?.token?.sub) {
 		throw redirect(302, "/");
+	}
+	var admin = false;
+	if (await verifyOwnNamespace(locals?.token?.sub, params.namespace)) {
+		admin = true;
 	}
 
 	// find if params.namespace is in namespace
@@ -47,27 +52,29 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			teams: true,
 		},
 	});
-	console.log("userInfo:", userInfo);
+	//console.log("userInfo:", userInfo);
 
 	if (userInfo?.namespace_name != params.namespace) {
 		// find if params.namespace is in teams
-		const team = await prisma.user.findFirst({
+		const team = await prisma.team.findMany({
+			where: {
+				namespace_name: params.namespace,
+			},
 			select: {
-				teams: {
-					where: {
-						namespace_name: params.namespace,
-					},
+				name: true,
+				bio: true,
+				members: {
 					include: {
-						users: true,
+						user: {
+							select: {
+								name: true,
+							},
+						},
 					},
 				},
 			},
 		});
-		// if team is NULL, then throw error
-		if (team?.teams.length === 0) {
-			// redirect to /@[params.namespace]
-			throw redirect(302, "/@" + params.namespace);
-		}
+		//console.log('team[0]',team[0].members);
 
 		// return all information belongs to the team
 		const info = await prisma.namespace.findUnique({
@@ -83,16 +90,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		});
 
 		const updatedJsonObject = {
-			name: team?.teams[0].name,
-			bio: team?.teams[0].bio,
+			name: team[0]?.name,
+			bio: team[0]?.bio,
 			councilors: info?.councilors,
 			committees: info?.committees,
 			conversations: info?.conversations,
 			libraries: info?.libraries,
-			members: team?.teams[0].users,
+			members: team[0]?.members,
 		};
-		console.log(updatedJsonObject);
-		return { updatedJsonObject };
+		//console.log(updatedJsonObject);
+		return { admin: admin, data: updatedJsonObject };
 	} else {
 		const updatedJsonObject = {
 			name: userInfo?.name,
@@ -103,7 +110,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			libraries: userInfo?.namespace.libraries,
 			team: userInfo?.teams,
 		};
-		console.log(updatedJsonObject);
-		return { updatedJsonObject };
+		//console.log(updatedJsonObject);
+		return { admin: admin, data: updatedJsonObject };
 	}
 };

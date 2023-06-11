@@ -1,38 +1,15 @@
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import { verifyOwnNamespace } from "$lib/server/verify";
+import { log } from "$lib/server/log";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!locals?.token?.sub) {
 		throw redirect(302, "/");
 	}
-	const userInfo = await prisma.user.findUnique({
-		where: {
-			email: locals.token.sub,
-		},
-		select: {
-			namespace_name: true,
-			teams: {
-				select: {
-					namespace_name: true,
-				},
-			},
-		},
-	});
-	//console.log("userInfo:", userInfo);
-
-	// if params.namespace is not in userInfo.teams.namespace_name,
-	// and not in userInfo.namespace_name then throw error
-	if (userInfo?.namespace_name != params.namespace) {
-		let found = false;
-		userInfo?.teams.forEach((team) => {
-			if (team.namespace_name === params.namespace) {
-				found = true;
-			}
-		});
-		if (!found) {
-			throw redirect(302, "/");
-		}
+	if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
+		throw redirect(302, "/");
 	}
 };
 
@@ -51,35 +28,11 @@ export const actions = {
 		}
 
 		// return all information belongs to user
-		const userInfo = await prisma.user.findUnique({
-			where: {
-				email: locals.token.sub,
-			},
-			select: {
-				namespace_name: true,
-				teams: {
-					select: {
-						namespace_name: true,
-					},
-				},
-			},
-		});
-		console.log("userInfo:", userInfo);
-		// if params.namespace is not in userInfo.teams.namespace_name,
-		// and not in userInfo.namespace_name then throw error
-		if (userInfo?.namespace_name != params.namespace) {
-			let found = false;
-			userInfo?.teams.forEach((team) => {
-				if (team.namespace_name === params.namespace) {
-					found = true;
-				}
-			});
-			if (!found) {
-				throw redirect(302, "/");
-			}
+		if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
+			throw redirect(302, "/");
 		}
 
-		// create the team
+		// create the councilor
 		const councilor = await prisma.councilor.create({
 			data: {
 				name: name,
@@ -104,6 +57,7 @@ export const actions = {
 			},
 		});
 
+		log('Create Councilor "' + councilor.name + '"', locals?.token?.sub, params.namespace);
 		throw redirect(302, "/@" + params.namespace + "/councilor/" + councilor.id);
 		return {};
 	},
