@@ -5,7 +5,10 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<form method="POST" action="?/createcouncilor">
+	<form method="POST" action="?/delete">
+		<button>Delete</button>
+	</form>
+	<form method="POST" action="?/save">
 		<label>
 			Name
 			<input name="name" type="text" />
@@ -18,6 +21,6 @@
 			Trait
 			<input name="trait" type="text" />
 		</label>
-		<button>Create</button>
+		<button>Save</button>
 	</form>
 </div>

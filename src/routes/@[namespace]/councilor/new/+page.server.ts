@@ -104,7 +104,7 @@ export const actions = {
 			},
 		});
 
-		throw redirect(302, "/");
+		throw redirect(302, "/@" + params.namespace + "/councilor/" + councilor.id);
 		return {};
 	},
 };
