@@ -73,7 +73,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			},
 		},
 	});
-	console.log("logs:", logs?.logs);
+	//console.log("logs:", logs?.logs);
 
 	// check if user is admin in the team
 	const isAdmin = await prisma.team.findUnique({

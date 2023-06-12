@@ -152,7 +152,7 @@ export const actions = {
 			}
 		});
 		if (!found) {
-			console.log("not found");
+			//console.log("not found");
 			throw redirect(302, "/@" + councilor?.namespace_name + "/councilor/" + params.id);
 		}
 

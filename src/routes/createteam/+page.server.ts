@@ -44,7 +44,7 @@ export const actions = {
 				},
 			},
 		});
-		console.log("teamCreate:", teamCreate);
+		//console.log("teamCreate:", teamCreate);
 
 		throw redirect(302, "/@" + name + "/manage");
 	},
