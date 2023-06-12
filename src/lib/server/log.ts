@@ -1,28 +1,27 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "./prisma";
+import debug from "debug";
 
-export const prisma = new PrismaClient();
+const console_log = debug("app:log");
 
 export async function log(do_what: string, done_by: string, namespace: string) {
-	console.log("---log---");
-	const userInfo = await prisma.user.findUnique({
+	const user_info = await prisma.user.findUnique({
 		where: {
 			email: done_by,
 		},
 	});
-	//console.log(userInfo);
+	console_log(user_info);
 
-	if (userInfo?.namespace_name === namespace) {
-		// create log
+	if (user_info?.namespace_name === namespace) {
 		await prisma.log.create({
 			data: {
 				content: do_what,
 				time: new Date(),
-				user_id: userInfo?.id,
+				user_id: user_info?.id,
 			},
 		});
 		return { success: true };
 	} else {
-		const teamInfo = await prisma.team.findUnique({
+		const team_info = await prisma.team.findUnique({
 			where: {
 				namespace_name: namespace,
 			},
@@ -31,8 +30,8 @@ export async function log(do_what: string, done_by: string, namespace: string) {
 			data: {
 				content: do_what,
 				time: new Date(),
-				user_id: userInfo?.id,
-				team_id: teamInfo?.id,
+				user_id: user_info?.id,
+				team_id: team_info?.id,
 			},
 		});
 		return { success: true };

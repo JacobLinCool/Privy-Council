@@ -5,7 +5,7 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<form method="POST" action="?/createteam">
+	<form method="POST" action="?/create-team">
 		<label>
 			Name
 			<input name="name" type="text" />

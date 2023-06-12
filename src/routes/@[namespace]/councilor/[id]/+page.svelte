@@ -15,7 +15,7 @@
 		</label>
 		<label>
 			Base Model
-			<input name="baseModel" type="text" />
+			<input name="base_model" type="text" />
 		</label>
 		<label>
 			Trait

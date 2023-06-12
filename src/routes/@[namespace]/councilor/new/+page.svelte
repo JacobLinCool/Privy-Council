@@ -5,14 +5,14 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<form method="POST" action="?/createcouncilor">
+	<form method="POST">
 		<label>
 			Name
 			<input name="name" type="text" />
 		</label>
 		<label>
 			Base Model
-			<input name="baseModel" type="text" />
+			<input name="base_model" type="text" />
 		</label>
 		<label>
 			Trait

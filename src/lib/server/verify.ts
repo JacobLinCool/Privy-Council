@@ -1,71 +1,31 @@
-import { PrismaClient } from "@prisma/client";
-
-export const prisma = new PrismaClient();
-
-export async function verifyOwnNamespace(
-	checkEmail: string,
-	checkNamespace: string | undefined,
-): Promise<boolean> {
-	//console.log("checkEmail:", checkEmail, "checkNamespace:", checkNamespace);
-	if (checkNamespace === undefined) return false;
-	const userInfo = await prisma.user.findUnique({
-		where: {
-			email: checkEmail,
-		},
-		select: {
-			namespace_name: true,
-			teams: {
-				select: {
-					team: {
-						select: {
-							namespace_name: true,
-						},
-					},
-				},
-			},
-		},
-	});
-	//console.log("userInfo:", userInfo);
-
-	// if councilor not belongs to user or his team, throw error
-	if (userInfo?.namespace_name != checkNamespace) {
-		let found = false;
-		userInfo?.teams.forEach((Inteam) => {
-			if (Inteam.team.namespace_name === checkNamespace) {
-				found = true;
-			}
-		});
-		if (!found) {
-			return false;
-		}
+/**
+ * @returns `true` if the user is the owner of the namespace or a member of the team that owns the namespace, `false` otherwise
+ */
+export function is_namespace_editable(user: App.Locals["user"], namespace: string): boolean {
+	if (!user) {
+		return false;
 	}
-	return true;
+
+	const editables = new Set([
+		user.namespace_name,
+		...user.memberships.map((m) => m.team.namespace_name),
+	]);
+
+	return editables.has(namespace);
 }
 
-export async function ownNamespace(checkEmail: string) {
-	//console.log("checkEmail:", checkEmail, "checkNamespace:", checkNamespace);
-	const userInfo = await prisma.user.findUnique({
-		where: {
-			email: checkEmail,
-		},
-		select: {
-			namespace_name: true,
-			teams: {
-				select: {
-					team: {
-						select: {
-							namespace_name: true,
-						},
-					},
-				},
-			},
-		},
-	});
-	const teamNamespaces = userInfo?.teams.map((team) => team.team.namespace_name);
-	// append userInfo.namespace_name to teamNamespaces
-	teamNamespaces?.push(userInfo?.namespace_name ? userInfo?.namespace_name : "NULL");
-	//console.log("ownNamespace userInfo:", teamNamespaces);
+/**
+ * @returns `true` if the user is the owner of the namespace or an admin of the team that owns the namespace, `false` otherwise
+ */
+export function is_namespace_owner(user: App.Locals["user"], namespace: string): boolean {
+	if (!user) {
+		return false;
+	}
 
-	// if councilor not belongs to user or his team, throw error
-	return { ownNamespace: teamNamespaces };
+	const ownerships = new Set([
+		user.namespace_name,
+		...user.memberships.filter((m) => m.role === "admin").map((m) => m.team.namespace_name),
+	]);
+
+	return ownerships.has(namespace);
 }

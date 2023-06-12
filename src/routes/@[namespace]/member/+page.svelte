@@ -12,7 +12,7 @@
 		</label>
 		<button>Leave</button>
 	</form>
-	<form method="POST" action="?/deleteteam">
+	<form method="POST" action="?/delete-team">
 		<button>Delete Team</button>
 	</form>
 </div>

@@ -1,189 +1,145 @@
 import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
-import { to_number } from "svelte/internal";
-import { verifyOwnNamespace, ownNamespace } from "$lib/server/verify";
+import { is_namespace_editable } from "$lib/server/verify";
 import { log } from "$lib/server/log";
 
-/*
-{
-  councilor: {
-    id: 5,
-    name: '111710',
-    visibility: false,
-    model: 'ttt',
-    trait: 'tttt',
-    created: 2023-06-11T16:24:02.656Z,
-    updated: 2023-06-11T16:24:02.667Z,
-    namespace_name: 'howardimportant-rw5nfp'
-  },
-  ownNamespace: [ 'newteam', 'test2', 'howardimportant-rw5nfp' ]
-}
-*/
 export const load: PageServerLoad = async ({ params, locals }) => {
-	if (!locals?.token?.sub) {
-		throw redirect(302, "/");
-	}
-
-	// get the namespace of the councilor
 	const councilor = await prisma.councilor.findUnique({
 		where: {
-			id: to_number(params.id),
+			id: parseInt(params.id),
 		},
 	});
-
-	if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
-		throw redirect(302, "/");
-	} else if (!(await verifyOwnNamespace(locals?.token?.sub, councilor?.namespace_name))) {
-		throw redirect(302, "/@" + params.namespace + "/manage");
-	} else if (councilor?.namespace_name !== params.namespace) {
-		throw redirect(302, "/@" + params.namespace + "/manage");
+	if (!councilor) {
+		throw redirect(302, `/@${params.namespace}`);
 	}
 
-	const ownNS = await ownNamespace(locals?.token?.sub);
-	//console.log({councilor:  councilor, ownNamespace: ownNS.ownNamespace });
-	return { councilor: councilor, ownNamespace: ownNS.ownNamespace };
+	if (councilor.namespace_name !== params.namespace) {
+		throw redirect(302, `/@${councilor.namespace_name}/councilor/${params.id}`);
+	}
+
+	if (!is_namespace_editable(locals.user, params.namespace) && councilor.visibility === false) {
+		throw redirect(302, `/@${params.namespace}`);
+	}
+
+	return { councilor };
 };
 
-/** @type {import('./$types').Actions} */
-export const actions = {
+export const actions: Actions = {
 	delete: async ({ locals, params }) => {
-		if (!locals?.token?.sub) {
+		if (!locals.user) {
 			throw redirect(302, "/");
 		}
 
-		// get the namespace of the councilor
 		const councilor = await prisma.councilor.findUnique({
 			where: {
-				id: to_number(params.id),
+				id: parseInt(params.id),
 			},
 		});
-
-		// --- verify started ---
-		if (!(await verifyOwnNamespace(locals?.token?.sub, councilor?.namespace_name))) {
-			throw redirect(302, "/");
+		if (!councilor) {
+			return;
 		}
 
-		// delete councilor
+		if (!is_namespace_editable(locals.user, councilor.namespace_name)) {
+			return;
+		}
+
 		await prisma.councilor.delete({
 			where: {
-				id: to_number(params.id),
+				id: parseInt(params.id),
 			},
 		});
 
 		// create log
-		log('Delete Councilor "' + councilor?.name + '"', locals?.token?.sub, params.namespace);
-		throw redirect(302, "/@" + councilor?.namespace_name + "/manage");
-		return {};
+		log(`Delete Councilor "${councilor.name}"`, locals.user.email, params.namespace);
+		throw redirect(302, `/@${councilor.namespace_name}/manage`);
 	},
 	save: async ({ locals, params, request }) => {
-		if (!locals?.token?.sub) {
+		if (!locals.user) {
 			throw redirect(302, "/");
 		}
+
 		const data = await request.formData();
 		const name = data.get("name")?.toString();
-		const baseModel = data.get("baseModel")?.toString();
+		const base_model = data.get("base_model")?.toString();
 		const trait = data.get("trait")?.toString();
-		if (name === undefined || baseModel === undefined || trait === undefined) {
-			throw redirect(302, "/@" + params.namespace + "/councilor/new");
+		if (!name || !base_model || !trait) {
+			return;
 		}
 
-		// get the namespace of the councilor
 		const councilor = await prisma.councilor.findUnique({
 			where: {
-				id: to_number(params.id),
+				id: parseInt(params.id),
 			},
 		});
+		if (!councilor) {
+			return;
+		}
 
-		// --- verify started ---
-		if (!(await verifyOwnNamespace(locals?.token?.sub, councilor?.namespace_name))) {
-			throw redirect(302, "/");
+		if (!is_namespace_editable(locals.user, councilor.namespace_name)) {
+			return;
 		}
 
 		// update the councilor
 		await prisma.councilor.update({
 			where: {
-				id: to_number(params.id),
+				id: parseInt(params.id),
 			},
 			data: {
 				name: name,
-				model: baseModel,
+				model: base_model,
 				trait: trait,
 			},
 		});
 
-		log('Update Councilor "' + councilor?.name + '"', locals?.token?.sub, params.namespace);
-		throw redirect(302, "/@" + councilor?.namespace_name + "/councilor/" + params.id);
-		return {};
+		log(`Update Councilor "${councilor.name}"`, locals.user.email, params.namespace);
+		throw redirect(302, `/@${councilor.namespace_name}/councilor/${params.id}`);
 	},
 	clone: async ({ locals, params, request }) => {
-		if (!locals?.token?.sub) {
+		if (!locals.user) {
 			throw redirect(302, "/");
 		}
 
 		// get the namespace of the councilor
 		const councilor = await prisma.councilor.findUnique({
 			where: {
-				id: to_number(params.id),
+				id: parseInt(params.id),
 			},
 		});
-		if (councilor === null) {
-			throw redirect(302, "/");
+		if (!councilor) {
+			return;
 		}
 
-		// --- verify started ---
-		if (!(await verifyOwnNamespace(locals?.token?.sub, councilor?.namespace_name))) {
-			throw redirect(302, "/");
+		if (!is_namespace_editable(locals.user, councilor.namespace_name)) {
+			return;
 		}
 
 		// verify if clone destination is in user's own namespace
 		const data = await request.formData();
-		const toNamespace = data.get("namespace")?.toString();
-		const userOwnNS = await ownNamespace(locals?.token?.sub);
-
-		if (toNamespace === undefined || userOwnNS.ownNamespace === undefined) {
-			throw redirect(302, "/");
-		}
-		// find if namespace is in userOwnNS
-		let found = false;
-		userOwnNS.ownNamespace.forEach((ownNS) => {
-			if (ownNS === toNamespace) {
-				found = true;
-			}
-		});
-		if (!found) {
-			//console.log("not found");
-			throw redirect(302, "/@" + councilor?.namespace_name + "/councilor/" + params.id);
+		const to_namespace = data.get("namespace")?.toString();
+		if (!to_namespace) {
+			return;
 		}
 
-		// clone the councilor
-		// create the councilor
-		const cloneCouncilor = await prisma.councilor.create({
+		if (!is_namespace_editable(locals.user, to_namespace)) {
+			return;
+		}
+
+		const cloned_councilor = await prisma.councilor.create({
 			data: {
 				name: councilor.name,
 				visibility: councilor.visibility,
 				model: councilor.model,
 				trait: councilor.trait,
-				namespace_name: toNamespace,
-			},
-		});
-
-		// add the councilor to the namespace
-		const nsUpdate = await prisma.namespace.update({
-			where: {
-				name: params.namespace,
-			},
-			data: {
-				councilors: {
+				namespace: {
 					connect: {
-						id: cloneCouncilor.id,
+						name: to_namespace,
 					},
 				},
 			},
 		});
 
-		log('Create Councilor "' + councilor?.name + '"', locals?.token?.sub, params.namespace);
-		throw redirect(302, "/@" + toNamespace + "/councilor/" + cloneCouncilor.id);
-		return {};
+		log(`Create Councilor "${cloned_councilor.name}"`, locals.user.email, params.namespace);
+		throw redirect(302, `/@${to_namespace}/councilor/${cloned_councilor.id}`);
 	},
 };

@@ -4,6 +4,6 @@
 	export let data: PageData;
 </script>
 
-<div class="flex h-full w-full items-center justify-center">
-	<pre><code>{JSON.stringify(data.user, null, 4)}</code></pre>
+<div class="flex h-full w-full items-center justify-center overflow-auto pt-20">
+	<pre><code>{JSON.stringify(data, null, 4)}</code></pre>
 </div>

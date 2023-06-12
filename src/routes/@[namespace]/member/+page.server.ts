@@ -1,216 +1,136 @@
-import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import { redirect, error } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 import { prisma } from "$lib/server/prisma";
-import { verifyOwnNamespace } from "$lib/server/verify";
+import { is_namespace_editable, is_namespace_owner } from "$lib/server/verify";
 import { log } from "$lib/server/log";
+import debug from "debug";
 
-/*
-output: {
-	councilors: councilors,
-	committees: committees,
-	conversations: conversations,
-	libraries: libraries,
-	members/teams: users/members,
-}
-*/
-// QQ 沒存到 member 的 role
+const console_log = debug("app:team");
+
 export const load: PageServerLoad = async ({ params, locals }) => {
-	if (!locals?.token?.sub) {
+	if (!locals.user) {
 		throw redirect(302, "/");
 	}
-	if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
-		throw redirect(302, "/@" + params.namespace);
+	if (!is_namespace_editable(locals.user, params.namespace)) {
+		throw redirect(302, `/@${params.namespace}`);
 	}
 
-	const userInfo = await prisma.user.findUnique({
+	const namespace = await prisma.namespace.findUnique({
 		where: {
-			email: locals.token.sub,
+			name: params.namespace,
 		},
 		include: {
-			namespace: {
+			team: {
 				include: {
-					councilors: true,
-					committees: true,
-					conversations: true,
-					libraries: true,
+					logs: is_namespace_owner(locals.user, params.namespace),
+					memberships: {
+						select: {
+							id: true,
+							role: true,
+							user: {
+								select: {
+									name: true,
+									email: true,
+								},
+							},
+						},
+					},
 				},
 			},
-			teams: true,
 		},
 	});
-	if (userInfo?.namespace_name == params.namespace) {
-		throw redirect(302, "/@" + params.namespace);
+
+	if (!namespace) {
+		throw redirect(302, "/");
 	}
 
-	const team = await prisma.team.findUnique({
-		where: {
-			namespace_name: params.namespace,
-		},
-		select: {
-			members: {
-				include: {
-					user: true,
-				},
-			},
-		},
-	});
-
-	//console.log("team:", team?.members);
-
-	// read log if user is admin, can't read log if user is not admin
-	const logs = await prisma.team.findUnique({
-		where: {
-			namespace_name: params.namespace,
-		},
-		select: {
-			logs: {
-				select: {
-					id: true,
-					content: true,
-					time: true,
-					user: true,
-				},
-			},
-		},
-	});
-	//console.log("logs:", logs?.logs);
-
-	// check if user is admin in the team
-	const isAdmin = await prisma.team.findUnique({
-		where: {
-			namespace_name: params.namespace,
-		},
-		select: {
-			members: {
-				where: {
-					user_id: userInfo?.id,
-					role: "admin",
-				},
-			},
-		},
-	});
-	if (isAdmin?.members.length === 0) {
-		return { admin: false, teams: team?.members, logs: null };
-	}
-	return { admin: true, teams: team?.members, logs: logs?.logs };
+	return { namespace };
 };
 
-/** @type {import('./$types').Actions} */
-export const actions = {
+export const actions: Actions = {
 	leave: async ({ locals, params, request }) => {
-		if (!locals?.token?.sub) {
+		if (!locals.user) {
 			throw redirect(302, "/");
 		}
-		if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
-			throw redirect(302, "/@" + params.namespace);
+		if (!is_namespace_editable(locals.user, params.namespace)) {
+			throw redirect(302, `/@${params.namespace}`);
 		}
 
 		const data = await request.formData();
 		const email = data.get("email")?.toString();
-		if (email === undefined) {
-			throw redirect(302, "/@" + params.namespace + "/member");
+		if (!email) {
+			throw redirect(302, `/@${params.namespace}/member`);
 		}
-		// check if user is admin in the team
-		const userInfo = await prisma.user.findUnique({
-			where: {
-				email: locals?.token?.sub,
-			},
-		});
-		const isAdmin = await prisma.team.findUnique({
-			where: {
-				namespace_name: params.namespace,
-			},
-			select: {
-				members: {
+
+		const is_admin = is_namespace_owner(locals.user, params.namespace);
+		if (!is_admin && email !== locals.user.email) {
+			return;
+		}
+
+		const result = await prisma.$transaction(async (prisma) => {
+			if (is_admin) {
+				const admin_count = await prisma.membership.count({
 					where: {
-						user_id: userInfo?.id,
 						role: "admin",
+						team: {
+							namespace: {
+								name: params.namespace,
+							},
+						},
+					},
+				});
+
+				if (admin_count <= 1) {
+					console_log("Cannot leave the team, you are the only admin");
+					return { count: 0 };
+				}
+			}
+
+			return prisma.membership.deleteMany({
+				where: {
+					user: {
+						email: email,
+					},
+					team: {
+						namespace: {
+							name: params.namespace,
+						},
 					},
 				},
-			},
-		});
-		// check if delete email is exist in user
-		const delUser = await prisma.user.findUnique({
-			where: {
-				email: email,
-			},
+			});
 		});
 
-		if (delUser === null) {
-			throw redirect(302, "/@" + params.namespace + "/member");
-		} else if (isAdmin?.members.length === 0 && email !== locals?.token?.sub) {
-			throw redirect(302, "/@" + params.namespace + "/member");
+		if (result.count === 0) {
+			console_log("No one left the team");
+			throw error(400, "No one left the team");
+		} else if (result.count > 1) {
+			console_log("Something went wrong, more than one user left the team");
+			throw error(500, "Something went wrong, more than one user left the team");
 		}
+		log(`User "${email}" left the team`, locals.user.email, params.namespace);
 
-		// delete user where email = email from the team member
-		const userid = await prisma.user.findUnique({
-			where: {
-				email: email,
-			},
-			select: {
-				id: true,
-				name: true,
-			},
-		});
-		const teamid = await prisma.team.findUnique({
-			where: {
-				namespace_name: params.namespace,
-			},
-			select: {
-				id: true,
-			},
-		});
-
-		await prisma.teamMember.deleteMany({
-			where: {
-				user_id: userid?.id,
-				team_id: teamid?.id,
-			},
-		});
-
-		// create log
-		log('Leave Team member "' + userid?.name + '"', locals?.token?.sub, params.namespace);
-		if (email === locals?.token?.sub) {
+		if (email === locals.user.email) {
 			throw redirect(302, "/");
 		}
-		throw redirect(302, "/@" + params.namespace + "/member");
-		return { success: true };
+
+		throw redirect(302, `/@${params.namespace}/member`);
 	},
-	deleteteam: async ({ locals, params }) => {
-		if (!locals?.token?.sub) {
+	"delete-team": async ({ locals, params }) => {
+		if (!locals.user) {
 			throw redirect(302, "/");
 		}
-		if (!(await verifyOwnNamespace(locals?.token?.sub, params.namespace))) {
+		if (!is_namespace_owner(locals.user, params.namespace)) {
 			throw redirect(302, "/@" + params.namespace);
 		}
 
-		// check if user is admin in the team
-		const userInfo = await prisma.user.findUnique({
-			where: {
-				email: locals?.token?.sub,
-			},
-		});
-		const isAdmin = await prisma.team.findUnique({
-			where: {
-				namespace_name: params.namespace,
-			},
-			select: {
-				members: {
-					where: {
-						user_id: userInfo?.id,
-						role: "admin",
-					},
-				},
-			},
-		});
-		if (isAdmin?.members.length === 0) {
-			throw redirect(302, "/@" + params.namespace + "/member");
-		}
-		const delTeam = await prisma.namespace.delete({
+		const result = await prisma.namespace.delete({
 			where: {
 				name: params.namespace,
 			},
 		});
+		if (result) {
+			console_log(`Goodbye ${params.namespace}`);
+		}
 
 		throw redirect(302, "/");
 	},

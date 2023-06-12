@@ -26,7 +26,7 @@ model User {
   namespace      Namespace    @relation("user_ns", fields: [namespace_name], references: [name], onDelete: Cascade)
   namespace_name String       @unique
   logs           Log[]        @relation("done_by")
-  teams          TeamMember[] @relation("teams")
+  memberships    Membership[] @relation("memberships")
 }
 
 model Team {
@@ -38,18 +38,18 @@ model Team {
   namespace      Namespace    @relation("team_ns", fields: [namespace_name], references: [name], onDelete: Cascade)
   namespace_name String       @unique
   logs           Log[]        @relation("logging")
-  members        TeamMember[] @relation("teams")
+  memberships    Membership[] @relation("memberships")
 }
 
-model TeamMember {
+model Membership {
   id      Int      @id @default(autoincrement())
   created DateTime @default(now())
   updated DateTime @updatedAt
   role    String   @default("member")
   team_id Int
   user_id Int
-  team    Team     @relation("teams", fields: [team_id], references: [id], onDelete: Cascade)
-  user    User     @relation("teams", fields: [user_id], references: [id], onDelete: Cascade)
+  team    Team     @relation("memberships", fields: [team_id], references: [id], onDelete: Cascade)
+  user    User     @relation("memberships", fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Log {
