@@ -37,7 +37,10 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 			bio: "",
 			namespace: {
 				create: {
-					name: payload.sub.split("@")[0] + "-" + Math.random().toString(36).slice(2, 8),
+					name:
+						payload.sub.split("@")[0].toLowerCase() +
+						"-" +
+						Math.random().toString(36).slice(2, 8),
 				},
 			},
 		},

@@ -23,10 +23,10 @@ model User {
   admin          Boolean      @default(false)
   created        DateTime     @default(now())
   updated        DateTime     @updatedAt
-  namespace      Namespace    @relation("user_ns", fields: [namespace_name], references: [name])
+  namespace      Namespace    @relation("user_ns", fields: [namespace_name], references: [name], onDelete: Cascade)
   namespace_name String       @unique
   logs           Log[]        @relation("done_by")
-  teams          TeamMember[] @relation("teams")
+  memberships    Membership[] @relation("memberships")
 }
 
 model Team {
@@ -35,21 +35,21 @@ model Team {
   bio            String
   created        DateTime     @default(now())
   updated        DateTime     @updatedAt
-  namespace      Namespace    @relation("team_ns", fields: [namespace_name], references: [name])
+  namespace      Namespace    @relation("team_ns", fields: [namespace_name], references: [name], onDelete: Cascade)
   namespace_name String       @unique
   logs           Log[]        @relation("logging")
-  members        TeamMember[] @relation("teams")
+  memberships    Membership[] @relation("memberships")
 }
 
-model TeamMember {
+model Membership {
   id      Int      @id @default(autoincrement())
   created DateTime @default(now())
   updated DateTime @updatedAt
   role    String   @default("member")
   team_id Int
   user_id Int
-  team    Team     @relation("teams", fields: [team_id], references: [id])
-  user    User     @relation("teams", fields: [user_id], references: [id])
+  team    Team     @relation("memberships", fields: [team_id], references: [id], onDelete: Cascade)
+  user    User     @relation("memberships", fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Log {
@@ -59,9 +59,9 @@ model Log {
   created DateTime @default(now())
   updated DateTime @updatedAt
   team_id Int?
-  team    Team?    @relation("logging", fields: [team_id], references: [id])
+  team    Team?    @relation("logging", fields: [team_id], references: [id], onDelete: Cascade)
   user_id Int?
-  user    User?    @relation("done_by", fields: [user_id], references: [id])
+  user    User?    @relation("done_by", fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Namespace {
@@ -85,7 +85,7 @@ model Councilor {
   created        DateTime    @default(now())
   updated        DateTime    @updatedAt
   namespace_name String
-  namespace      Namespace   @relation("ns_councilor", fields: [namespace_name], references: [name])
+  namespace      Namespace   @relation("ns_councilor", fields: [namespace_name], references: [name], onDelete: Cascade)
   committees     Committee[] @relation("in_committee")
   speaks         Committee[] @relation("speaks")
 }
@@ -98,8 +98,8 @@ model Committee {
   updated        DateTime       @updatedAt
   namespace_name String
   speaker_id     Int
-  namespace      Namespace      @relation("ns_committee", fields: [namespace_name], references: [name])
-  speaker        Councilor      @relation("speaks", fields: [speaker_id], references: [id])
+  namespace      Namespace      @relation("ns_committee", fields: [namespace_name], references: [name], onDelete: Cascade)
+  speaker        Councilor      @relation("speaks", fields: [speaker_id], references: [id], onDelete: Cascade)
   councilors     Councilor[]    @relation("in_committee")
   conversations  Conversation[] @relation("generated_by")
 }
@@ -112,9 +112,9 @@ model Conversation {
   created        DateTime  @default(now())
   updated        DateTime  @updatedAt
   namespace_name String
-  namespace      Namespace @relation("ns_conversation", fields: [namespace_name], references: [name])
+  namespace      Namespace @relation("ns_conversation", fields: [namespace_name], references: [name], onDelete: Cascade)
   committee_id   Int
-  committee      Committee @relation("generated_by", fields: [committee_id], references: [id])
+  committee      Committee @relation("generated_by", fields: [committee_id], references: [id], onDelete: Cascade)
   tags           Tag[]     @relation("tagged")
 }
 
@@ -125,7 +125,7 @@ model Library {
   created        DateTime  @default(now())
   updated        DateTime  @updatedAt
   namespace_name String
-  namespace      Namespace @relation("ns_library", fields: [namespace_name], references: [name])
+  namespace      Namespace @relation("ns_library", fields: [namespace_name], references: [name], onDelete: Cascade)
   data           Data[]    @relation("contains")
 }
 
@@ -135,7 +135,7 @@ model Data {
   created    DateTime @default(now())
   updated    DateTime @updatedAt
   library_id Int
-  library    Library  @relation("contains", fields: [library_id], references: [id])
+  library    Library  @relation("contains", fields: [library_id], references: [id], onDelete: Cascade)
 }
 
 model Tag {
