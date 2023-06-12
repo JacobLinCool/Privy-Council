@@ -128,4 +128,4 @@ class Coneversation {
 	}
 }
 
-export { Coneversation };
+export { Committee, Coneversation };
