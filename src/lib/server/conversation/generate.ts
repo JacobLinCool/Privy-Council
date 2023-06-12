@@ -1,12 +1,13 @@
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
+import { string } from "zod";
 
 const configuration = new Configuration({
 	apiKey: env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
-class Councilor {
+export class Councilor {
 	name: string;
 	model: string;
 	trait: string;
@@ -33,7 +34,8 @@ class Councilor {
 class Committee {
 	speaker: Councilor;
 	councilors: Councilor[];
-	limit = 3;
+	divide_limit = 3;
+	check_limit = 3;
 	works: string[] = [];
 	final_works: string[] = [];
 
@@ -56,9 +58,10 @@ class Committee {
 		return divide_speaker;
 	}
 
-	create_final_speaker() {
+	create_final_speaker(input: string) {
 		const final_speaker: Councilor = this.speaker;
-		final_speaker.prompt += "You need to concultion following text and extract abstract.";
+		final_speaker.prompt +=
+			"Please check following works could meet request that " + input + ".";
 
 		this.final_works.forEach((final_work) => {
 			final_speaker.prompt += final_work;
@@ -70,18 +73,18 @@ class Committee {
 	async divide_work(input: string) {
 		const divide_speaker: Councilor = this.create_divide_speaker(input);
 
-		let counter: number = this.limit;
+		let counter: number = this.divide_limit;
 		while (this.works.length != this.councilors.length) {
 			let respond: string;
 			try {
 				respond = await divide_speaker.ask();
 			} catch {
-				throw "fail to divide works";
+				throw Error("fail to divide works");
 			}
 
 			this.works = respond.split("\n");
 
-			if (counter == 0) throw "false to devide works";
+			if (counter == 0) throw Error("fail to devide works");
 			counter--;
 		}
 
@@ -91,27 +94,44 @@ class Committee {
 		}
 	}
 
-	async finish_work() {
+	async finish_work(input: string) {
 		for (let i = 0; i < this.councilors.length; i++) {
 			try {
 				this.final_works[i] = await this.councilors[i].ask();
 			} catch {
-				throw this.councilors[i].name + "fail to finish work";
+				throw Error(this.councilors[i].name + "fail to finish work");
 			}
 		}
 
-		const final_speaker: Councilor = this.create_final_speaker();
+		const final_speaker: Councilor = this.create_final_speaker(input);
 
-		try {
-			const final: string = await final_speaker.ask();
-			return final;
-		} catch {
-			throw "fail to concultion";
+		let counter: number = this.check_limit;
+		let allow = false;
+		let final = "";
+
+		while (allow == false) {
+			try {
+				final = await final_speaker.ask();
+			} catch {
+				throw Error("fail to check");
+			}
+			if (final.includes("YES") || final.includes("Yes") || final.includes("yes")) {
+				allow = true;
+			}
+
+			if (counter == 0) throw Error("answer are not allow");
+			counter--;
 		}
+
+		let final_respond = "Here are each worker need to finish:";
+		for (let i = 0; i < this.councilors.length; i++) {
+			final_respond += this.councilors[i].name + ": " + this.final_works[i];
+		}
+		return final_respond;
 	}
 }
 
-class Coneversation {
+export class Coneversation {
 	input: string;
 	intermediate: string[];
 	committee: Committee;
@@ -124,8 +144,7 @@ class Coneversation {
 
 	async generate() {
 		this.committee.divide_work(this.input);
+		this.committee.finish_work(this.input);
 		return this.committee.final_works[0];
 	}
 }
-
-export { Committee, Coneversation };
