@@ -123,9 +123,9 @@ class Committee {
 			counter--;
 		}
 
-		let final_respond = "Here are each worker need to finish:";
+		let final_respond = "Here are each worker need to finish:\n";
 		for (let i = 0; i < this.councilors.length; i++) {
-			final_respond += this.councilors[i].name + ": " + this.final_works[i];
+			final_respond += this.councilors[i].name + ": " + this.final_works[i] + "\n";
 		}
 		return final_respond;
 	}
