@@ -1,4 +1,3 @@
-import type { ChatCompletionRequestMessage, ChatCompletionResponseMessage } from "openai";
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
 
