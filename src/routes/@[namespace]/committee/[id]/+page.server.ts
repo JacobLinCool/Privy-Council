@@ -1,8 +1,9 @@
-import { redirect } from "@sveltejs/kit";
+import { redirect, error } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
 import { log } from "$lib/server/log";
+import { start_conversation } from "$lib/server/generate";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	// TODO: Not Sure Frontend
@@ -231,9 +232,17 @@ export const actions: Actions = {
 		if (!input) {
 			return;
 		}
+		console.log("send conversation");
+		const final = await start_conversation(input, parseInt(params.id));
 
-		//const final = await start_conversation(input, params.id);
-		const final = "Hello World";
+		// handle error in final, the output in final: string | Error
+		if (final instanceof Error || !final) {
+			console.log(final);
+			return { success: false };
+		}
+		console.log(final);
+
+		//const final = "Hello World";
 
 		const conversation = await prisma.conversation.create({
 			data: {

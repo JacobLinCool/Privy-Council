@@ -201,11 +201,11 @@ export async function start_conversation(input: string, committee_id: number) {
 	const committee = new Committee(speaker, councilors);
 	const conversation = new Conversation(input, committee);
 
+	let output: any;
 	try {
-		const output = await conversation.generate();
-		if (output == "") Error("return null outpur");
+		output = await conversation.generate();
 		return output;
 	} catch {
-		return Error("fail to gereation a conversation");
+		return output;
 	}
 }
