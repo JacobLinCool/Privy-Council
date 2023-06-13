@@ -30,7 +30,7 @@ export class Councilor {
 	}
 }
 
-class Committee {
+export class Committee {
 	speaker: Councilor;
 	councilors: Councilor[];
 	divide_limit = 3;
