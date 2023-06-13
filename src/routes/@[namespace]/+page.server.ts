@@ -38,42 +38,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		throw redirect(302, "/");
 	}
 
-	const committee_id = 1;
-	const com = await prisma.committee.findUnique({
-		where: {
-			id: committee_id,
-		},
-		include: {
-			speaker: {
-				include: {
-					slots: {
-						select: {
-							library: {
-								select: {
-									data: true,
-								},
-							},
-						},
-					},
-				},
-			},
-			councilors: {
-				include: {
-					slots: {
-						select: {
-							library: {
-								select: {
-									data: true,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	});
-	console.log(com?.speaker.slots[0].library.data);
-
 	return { namespace };
 };
 
