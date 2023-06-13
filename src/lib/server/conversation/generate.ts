@@ -1,6 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
-import { string } from "zod";
 
 const configuration = new Configuration({
 	apiKey: env.OPENAI_API_KEY,
@@ -73,18 +72,18 @@ class Committee {
 	async divide_work(input: string) {
 		const divide_speaker: Councilor = this.create_divide_speaker(input);
 
-		let counter: number = this.divide_limit;
+		let counter = this.divide_limit;
 		while (this.works.length != this.councilors.length) {
 			let respond: string;
 			try {
 				respond = await divide_speaker.ask();
 			} catch {
-				throw Error("fail to divide works");
+				throw new Error("fail to divide works");
 			}
 
 			this.works = respond.split("\n");
 
-			if (counter == 0) throw Error("fail to devide works");
+			if (counter == 0) throw new Error("fail to devide works");
 			counter--;
 		}
 
@@ -99,13 +98,13 @@ class Committee {
 			try {
 				this.final_works[i] = await this.councilors[i].ask();
 			} catch {
-				throw Error(this.councilors[i].name + "fail to finish work");
+				throw new Error(this.councilors[i].name + "fail to finish work");
 			}
 		}
 
 		const final_speaker: Councilor = this.create_final_speaker(input);
 
-		let counter: number = this.check_limit;
+		let counter = this.check_limit;
 		let allow = false;
 		let final = "";
 
@@ -113,13 +112,13 @@ class Committee {
 			try {
 				final = await final_speaker.ask();
 			} catch {
-				throw Error("fail to check");
+				throw new Error("fail to check");
 			}
-			if (final.includes("YES") || final.includes("Yes") || final.includes("yes")) {
+			if (final.toLocaleLowerCase().includes("yes")) {
 				allow = true;
 			}
 
-			if (counter == 0) throw Error("answer are not allow");
+			if (counter == 0) throw new Error("answer are not allow");
 			counter--;
 		}
 
@@ -143,8 +142,8 @@ export class Coneversation {
 	}
 
 	async generate() {
-		this.committee.divide_work(this.input);
-		this.committee.finish_work(this.input);
+		await this.committee.divide_work(this.input);
+		await this.committee.finish_work(this.input);
 		return this.committee.final_works[0];
 	}
 }
