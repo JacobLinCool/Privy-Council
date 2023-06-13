@@ -12,6 +12,24 @@
 		</label>
 		<button>Leave</button>
 	</form>
+	<form method="POST" action="?/add-member">
+		<label>
+			Email
+			<input name="email" type="text" />
+		</label>
+		<button>Add Member</button>
+	</form>
+	<form method="POST" action="?/change-role">
+		<label>
+			Email
+			<input name="email" type="text" />
+		</label>
+		<label>
+			Role
+			<input name="role" type="text" />
+		</label>
+		<button>Change Role</button>
+	</form>
 	<form method="POST" action="?/delete-team">
 		<button>Delete Team</button>
 	</form>
