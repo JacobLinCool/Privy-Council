@@ -13,5 +13,24 @@
 		"trending": "Trending"
 	},
 	"welcome": "Welcome to Privy Council LLM",
-	"with-tech": "Privy Council LLM is an AI dialogue generation platform that enables users to create and manage multiple AI characters for more reliable and complex conversations."
+	"with-tech": "Privy Council LLM is an AI dialogue generation platform that enables users to create and manage multiple AI characters for more reliable and complex conversations.",
+	"features": {
+		"title": "Features",
+		"autonomous": {
+			"title": "Autonomous",
+			"decription": "Some decription"
+		},
+		"reusability": {
+			"title": "Reusability",
+			"decription": "Some decription"
+		},
+		"sharable": {
+			"title": "Sharable",
+			"decription": "Some decription"
+		},
+		"no-code-api": {
+			"title": "No Code API",
+			"decription": "Some decription"
+		}
+	}
 }

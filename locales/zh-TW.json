@@ -13,5 +13,24 @@
 		"trending": "熱門"
 	},
 	"welcome": "歡迎使用 Privy Council LLM",
-	"with-tech": "Privy Council LLM 是一個 AI 對話生成平台，允許使用者建立和管理多個 AI 角色，以進行更可靠和複雜的對話。"
+	"with-tech": "Privy Council LLM 是一個 AI 對話生成平台，允許使用者建立和管理多個 AI 角色，以進行更可靠和複雜的對話。",
+	"features": {
+		"title": "功能介紹",
+		"autonomous": {
+			"title": "自主性",
+			"decription": "一些敘述"
+		},
+		"reusability": {
+			"title": "可重用性",
+			"decription": "一些敘述"
+		},
+		"sharable": {
+			"title": "可分享性",
+			"decription": "一些敘述"
+		},
+		"no-code-api": {
+			"title": "不用打程式呼叫 API",
+			"decription": "一些敘述"
+		}
+	}
 }
