@@ -189,7 +189,7 @@ export async function start_conversation(input: string, committee_id: number) {
 
 	const speaker = new Councilor(data.speaker.name, data.speaker.model, data.speaker.trait);
 	const councilors: Councilor[] = [];
-	for (let i = 0; i < data.councilors.length(); i++) {
+	for (let i = 0; i < data.councilors.length; i++) {
 		councilors.push(
 			new Councilor(
 				data.councilors[i].name,
