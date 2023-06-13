@@ -2,6 +2,7 @@ import debug from "debug";
 import { verify, JWT } from "sveltekit-jwt";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import { dev } from "$app/environment";
 
 const log = debug("app:auth");
 log.enabled = true;
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 	cookies.set("token", token, {
 		path: "/",
 		httpOnly: true,
-		secure: true,
+		secure: !dev,
 		sameSite: "strict",
 		maxAge: 60 * 60 * 12,
 	});
