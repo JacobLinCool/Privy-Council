@@ -3,6 +3,8 @@
 	import Icon from "@iconify/svelte";
 	import "../app.css";
 	import PageTransition from "$lib/component/PageTransition.svelte";
+	import type { LayoutData } from "./$types";
+	export let data: LayoutData;
 </script>
 
 <div class="group fixed left-0 top-0 z-20 w-full p-2">
@@ -24,6 +26,26 @@
 						<span class="hidden sm:inline-block">{$t("nav.trending")}</span>
 					</a>
 				</li>
+				{#if data.user != null}
+					<li>
+						<a href="/@{data.user.namespace_name}/manage">
+							<Icon icon="octicon:book-16" inline />
+							<span class="hidden sm:inline-block">{$t("nav.manage")}</span>
+						</a>
+					</li>
+					<li>
+						<a href="/@{data.user.namespace_name}">
+							<Icon icon="octicon:project-roadmap-16" inline />
+							<span class="hidden sm:inline-block">{$t("nav.profile")}</span>
+						</a>
+					</li>
+					<li>
+						<a href="/">
+							<Icon icon="octicon:sign-out-16" inline />
+							<span class="hidden sm:inline-block">{$t("nav.sign-out")}</span>
+						</a>
+					</li>
+				{/if}
 			</ul>
 		</div>
 	</nav>

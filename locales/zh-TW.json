@@ -10,7 +10,10 @@
 	},
 	"nav": {
 		"home": "首頁",
-		"trending": "熱門"
+		"trending": "熱門",
+		"manage": "管理",
+		"profile": "個人頁面",
+		"sign-out": "登出"
 	},
 	"welcome": "歡迎使用 Privy Council LLM",
 	"with-tech": "Privy Council LLM 是一個 AI 對話生成平台，允許使用者建立和管理多個 AI 角色，以進行更可靠和複雜的對話。",
@@ -32,5 +35,11 @@
 			"title": "不用打程式呼叫 API",
 			"decription": "一些敘述"
 		}
-	}
+	},
+	"search": "搜尋",
+	"councilor": "委員",
+	"council": "委員會",
+	"conversation": "對話",
+	"library": "圖書館",
+	"member": "成員"
 }
