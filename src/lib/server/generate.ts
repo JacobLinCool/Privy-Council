@@ -23,6 +23,7 @@ class Councilor {
 
 	async ask(): Promise<string> {
 		if (this.prompt === "") return "";
+		console.log("prompt: ", this.prompt, "[prompt END]");
 		const respond = await openai.createChatCompletion({
 			model: this.model,
 			messages: [{ role: "user", content: this.prompt }],
@@ -48,13 +49,13 @@ class Committee {
 		const divide_speaker = this.speaker;
 
 		divide_speaker.prompt +=
-			"Now you need to finish this work," + input + ", and you are a PM.";
+			'Now you need to finish the work - "' + input + '". And you are a PM.';
 		divide_speaker.prompt += "You need to divide work to following workers, ";
 		this.councilors.forEach((councilor) => {
 			divide_speaker.prompt += councilor.name + ", ";
 		});
 		divide_speaker.prompt +=
-			"You need to list what should wach worker need to do with one line. And do not say any recudency word.";
+			'You need to show what each worker need to do overall in just one line. Starting by adding "[START]" before each worker. Finished by adding "[FINISH]" after each worker. Show in order. And do not say any recudency word.';
 
 		return divide_speaker;
 	}
@@ -87,11 +88,22 @@ class Committee {
 
 		console.log(respond);
 
-		this.works = respond.split("\n");
+		//this.works = respond.split("\n");
+		// respond split by [START] and [FINISH], save the string after [START] and before [FINISH]
+		this.works = respond.split(/\[START\]|\[FINISH\]/g).filter((x) => x !== "");
+		// remove all '\n', and remove all empty string
+		this.works = this.works.map((x) => x.replace(/\n/g, "")).filter((x) => x !== "");
+		// remove all string with only space
+		this.works = this.works.filter((x) => x.replace(/\s/g, "") !== "");
+
+		console.log("this.works: ", this.works);
 
 		for (let i = 0; i < this.councilors.length; i++) {
 			this.councilors[i].prompt +=
-				"Your need to finish" + this.works[i] + "." + "Please show how to finish.";
+				'Your need to finish the work-"' +
+				this.works[i] +
+				'".' +
+				"Please show how to finish.";
 		}
 	}
 
