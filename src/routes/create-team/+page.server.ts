@@ -1,5 +1,5 @@
 import { error, redirect } from "@sveltejs/kit";
-import type { Actions } from "./$types";
+import type { PageServerLoad, Actions } from "./$types";
 import { prisma } from "$lib/server/prisma";
 
 export const actions: Actions = {
@@ -40,4 +40,10 @@ export const actions: Actions = {
 
 		throw redirect(302, `/@${name}/manage`);
 	},
+};
+
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) {
+		throw redirect(302, "/");
+	}
 };
