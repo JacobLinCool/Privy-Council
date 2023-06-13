@@ -88,6 +88,7 @@ model Councilor {
   namespace      Namespace   @relation("ns_councilor", fields: [namespace_name], references: [name], onDelete: Cascade)
   committees     Committee[] @relation("in_committee")
   speaks         Committee[] @relation("speaks")
+  slots          Slot[]      @relation("slots")
 }
 
 model Committee {
@@ -102,6 +103,7 @@ model Committee {
   speaker        Councilor      @relation("speaks", fields: [speaker_id], references: [id], onDelete: Cascade)
   councilors     Councilor[]    @relation("in_committee")
   conversations  Conversation[] @relation("generated_by")
+  slots          Slot[]         @relation("slots")
 }
 
 model Conversation {
@@ -127,15 +129,26 @@ model Library {
   namespace_name String
   namespace      Namespace @relation("ns_library", fields: [namespace_name], references: [name], onDelete: Cascade)
   data           Data[]    @relation("contains")
+  slots          Slot[]    @relation("slots")
+}
+
+model Slot {
+  id           Int       @id @default(autoincrement())
+  created      DateTime  @default(now())
+  updated      DateTime  @updatedAt
+  library_id   Int
+  councilor_id Int
+  committee_id Int
+  library      Library   @relation("slots", fields: [library_id], references: [id], onDelete: Cascade)
+  councilor    Councilor @relation("slots", fields: [councilor_id], references: [id], onDelete: Cascade)
+  committee    Committee @relation("slots", fields: [committee_id], references: [id], onDelete: Cascade)
 }
 
 model Data {
-  id         Int      @id @default(autoincrement())
-  content    String
-  created    DateTime @default(now())
-  updated    DateTime @updatedAt
-  library_id Int
-  library    Library  @relation("contains", fields: [library_id], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  content   String    @unique
+  created   DateTime  @default(now())
+  libraries Library[] @relation("contains")
 }
 
 model Tag {

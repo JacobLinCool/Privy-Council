@@ -134,4 +134,130 @@ export const actions: Actions = {
 
 		throw redirect(302, "/");
 	},
+	"add-member": async ({ locals, params, request }) => {
+		if (!locals.user) {
+			throw redirect(302, "/");
+		}
+		if (!is_namespace_editable(locals.user, params.namespace)) {
+			throw redirect(302, `/@${params.namespace}`);
+		}
+
+		const data = await request.formData();
+		const email = data.get("email")?.toString();
+		if (!email) {
+			throw redirect(302, `/@${params.namespace}/member`);
+		}
+
+		const is_admin = is_namespace_owner(locals.user, params.namespace);
+		if (!is_admin) {
+			return;
+		}
+
+		const team_info = await prisma.team.findUnique({
+			where: {
+				namespace_name: params.namespace,
+			},
+		});
+
+		await prisma.membership.create({
+			data: {
+				role: "member",
+				user: {
+					connect: { email: email },
+				},
+				team: {
+					connect: { id: team_info?.id },
+				},
+			},
+		});
+
+		log(`User "${email}" has been added to the team`, locals.user.email, params.namespace);
+
+		throw redirect(302, `/@${params.namespace}/member`);
+	},
+	"change-role": async ({ locals, params, request }) => {
+		if (!locals.user) {
+			throw redirect(302, "/");
+		}
+		if (!is_namespace_editable(locals.user, params.namespace)) {
+			throw redirect(302, `/@${params.namespace}`);
+		}
+
+		const data = await request.formData();
+		const email = data.get("email")?.toString();
+		const role = data.get("role")?.toString();
+		if (!email || !role) {
+			throw redirect(302, `/@${params.namespace}/member`);
+		}
+
+		const is_admin = is_namespace_owner(locals.user, params.namespace);
+		if (!is_admin) {
+			return;
+		}
+
+		if (email === locals.user.email) {
+			await prisma.$transaction(async (prisma) => {
+				const admin_count = await prisma.membership.count({
+					where: {
+						role: "admin",
+						team: {
+							namespace: {
+								name: params.namespace,
+							},
+						},
+					},
+				});
+
+				if (admin_count <= 1) {
+					console_log("Cannot downgrade yourself, you are the only admin");
+					return { count: 0 };
+				}
+
+				await prisma.membership.updateMany({
+					where: {
+						user: {
+							email: email,
+						},
+						team: {
+							namespace: {
+								name: params.namespace,
+							},
+						},
+					},
+					data: {
+						role: role,
+					},
+				});
+				log(`User "${email}" changed role to "${role}"`, email, params.namespace);
+			});
+			throw redirect(302, `/@${params.namespace}/member`);
+		}
+
+		const result = await prisma.membership.updateMany({
+			where: {
+				user: {
+					email: email,
+				},
+				team: {
+					namespace: {
+						name: params.namespace,
+					},
+				},
+			},
+			data: {
+				role: role,
+			},
+		});
+
+		if (result.count === 0) {
+			console_log("No one changed role");
+			throw error(400, "No one changed role");
+		} else if (result.count > 1) {
+			console_log("Something went wrong, more than one user changed role");
+			throw error(500, "Something went wrong, more than one user changed role");
+		}
+		log(`User "${email}" changed role to "${role}"`, locals.user.email, params.namespace);
+
+		throw redirect(302, `/@${params.namespace}/member`);
+	},
 };

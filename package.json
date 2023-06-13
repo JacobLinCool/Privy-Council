@@ -19,7 +19,8 @@
 		"studio": "prisma studio"
 	},
 	"dependencies": {
-		"@prisma/client": "4.15.0"
+		"@prisma/client": "4.15.0",
+		"openai": "^3.2.1"
 	},
 	"devDependencies": {
 		"@changesets/changelog-github": "^0.4.8",
