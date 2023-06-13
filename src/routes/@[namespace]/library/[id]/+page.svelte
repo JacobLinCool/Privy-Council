@@ -30,11 +30,7 @@
 		</label>
 		<button>Clone</button>
 	</form>
-	<form method="POST" action="?/start">
-		<label>
-			Input
-			<input name="input" type="text" />
-		</label>
-		<button>Start</button>
+	<form method="POST" action="?/save">
+		<button>Save</button>
 	</form>
 </div>

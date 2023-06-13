@@ -204,4 +204,56 @@ export const actions: Actions = {
 		log(`Create Committee "${cloned_committee.name}"`, locals.user.email, params.namespace);
 		throw redirect(302, `/@${to_namespace}/committee/${cloned_committee.id}`);
 	},
+	start: async ({ locals, params, request }) => {
+		if (!locals.user) {
+			throw redirect(302, "/");
+		}
+		// get the namespace of the committee
+		const committee = await prisma.committee.findUnique({
+			where: {
+				id: parseInt(params.id),
+			},
+			include: {
+				speaker: true,
+			},
+		});
+		if (!committee) {
+			return;
+		}
+
+		if (!is_namespace_editable(locals.user, committee.namespace_name)) {
+			return;
+		}
+
+		// verify if clone destination is in user's own namespace
+		const data = await request.formData();
+		const input = data.get("input")?.toString();
+		if (!input) {
+			return;
+		}
+
+		//const final = await start_conversation(input, params.id);
+		const final = "Hello World";
+
+		const conversation = await prisma.conversation.create({
+			data: {
+				input: input,
+				immediate: "",
+				final: final,
+				namespace: {
+					connect: {
+						name: committee.namespace_name,
+					},
+				},
+				committee: {
+					connect: {
+						id: parseInt(params.id),
+					},
+				},
+			},
+		});
+
+		log(`Create Conversation on "${committee.name}"`, locals.user.email, params.namespace);
+		throw redirect(302, `/@${committee.namespace_name}/conversation/${conversation.id}`);
+	},
 };
