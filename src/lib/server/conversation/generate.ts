@@ -44,7 +44,8 @@ class Committee {
 	}
 
 	create_divide_speaker(input: string) {
-		const divide_speaker: Councilor = this.speaker;
+		const divide_speaker = this.speaker;
+
 		divide_speaker.prompt +=
 			"Now you need to finish this work," + input + ", and you are a PM.";
 		divide_speaker.prompt += "You need to divide work to following workers, ";
@@ -58,7 +59,8 @@ class Committee {
 	}
 
 	create_final_speaker(input: string) {
-		const final_speaker: Councilor = this.speaker;
+		const final_speaker = this.speaker;
+
 		final_speaker.prompt +=
 			"Please check following works could meet request that " + input + ".";
 
@@ -70,7 +72,7 @@ class Committee {
 	}
 
 	async divide_work(input: string) {
-		const divide_speaker: Councilor = this.create_divide_speaker(input);
+		const divide_speaker = this.create_divide_speaker(input);
 
 		let counter = this.divide_limit;
 		while (this.works.length != this.councilors.length) {
@@ -102,7 +104,7 @@ class Committee {
 			}
 		}
 
-		const final_speaker: Councilor = this.create_final_speaker(input);
+		const final_speaker = this.create_final_speaker(input);
 
 		let counter = this.check_limit;
 		let allow = false;
@@ -144,6 +146,7 @@ export class Coneversation {
 	async generate() {
 		await this.committee.divide_work(this.input);
 		await this.committee.finish_work(this.input);
+		this.intermediate = this.committee.final_works;
 		return this.committee.final_works[0];
 	}
 }
