@@ -1,12 +1,13 @@
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
+import { prisma } from "$lib/server/prisma";
 
 const configuration = new Configuration({
 	apiKey: env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
-export class Councilor {
+class Councilor {
 	name: string;
 	model: string;
 	trait: string;
@@ -30,7 +31,7 @@ export class Councilor {
 	}
 }
 
-export class Committee {
+class Committee {
 	speaker: Councilor;
 	councilors: Councilor[];
 	divide_limit = 3;
@@ -132,7 +133,7 @@ export class Committee {
 	}
 }
 
-export class Coneversation {
+class Conversation {
 	input: string;
 	intermediate: string[];
 	committee: Committee;
@@ -148,5 +149,63 @@ export class Coneversation {
 		await this.committee.finish_work(this.input);
 		this.intermediate = this.committee.final_works;
 		return this.committee.final_works[0];
+	}
+}
+
+export async function start_conversation(input: string, committee_id: number) {
+	const data = await prisma.committee.findUnique({
+		where: {
+			id: committee_id,
+		},
+		include: {
+			speaker: {
+				include: {
+					slots: {
+						select: {
+							library: {
+								select: {
+									data: true,
+								},
+							},
+						},
+					},
+				},
+			},
+			councilors: {
+				include: {
+					slots: {
+						select: {
+							library: {
+								select: {
+									data: true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	});
+
+	const speaker = new Councilor(data.speaker.name, data.speaker.model, data.speaker.trait);
+	const councilors: Councilor[] = [];
+	for (let i = 0; i < data.councilors.length(); i++) {
+		councilors.push(
+			new Councilor(
+				data.councilors[i].name,
+				data.councilors[i].model,
+				data.councilors[i].trait,
+			),
+		);
+	}
+	const committee = new Committee(speaker, councilors);
+	const conversation = new Conversation(input, committee);
+
+	try {
+		const output = await conversation.generate();
+		if (output == "") Error("return null outpur");
+		return output;
+	} catch {
+		return Error("fail to gereation a conversation");
 	}
 }
