@@ -5,5 +5,15 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<pre><code>{JSON.stringify(data.user, null, 4)}</code></pre>
+	<form method="POST">
+		<label>
+			Name
+			<input name="name" type="text" />
+		</label>
+		<label>
+			Bio
+			<input name="bio" type="text" />
+		</label>
+		<button>Pencil Here</button>
+	</form>
 </div>
