@@ -25,6 +25,9 @@ devDependencies:
     "@sveltejs/adapter-auto":
         specifier: ^2.1.0
         version: 2.1.0(@sveltejs/kit@1.20.2)
+    "@sveltejs/adapter-node":
+        specifier: ^1.2.4
+        version: 1.2.4(@sveltejs/kit@1.20.2)
     "@sveltejs/kit":
         specifier: ^1.20.2
         version: 1.20.2(svelte@3.59.1)(vite@4.3.9)
@@ -1276,6 +1279,82 @@ packages:
             }
         dev: true
 
+    /@rollup/plugin-commonjs@24.1.0(rollup@3.24.1):
+        resolution:
+            {
+                integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==,
+            }
+        engines: { node: ">=14.0.0" }
+        peerDependencies:
+            rollup: ^2.68.0||^3.0.0
+        peerDependenciesMeta:
+            rollup:
+                optional: true
+        dependencies:
+            "@rollup/pluginutils": 5.0.2(rollup@3.24.1)
+            commondir: 1.0.1
+            estree-walker: 2.0.2
+            glob: 8.1.0
+            is-reference: 1.2.1
+            magic-string: 0.27.0
+            rollup: 3.24.1
+        dev: true
+
+    /@rollup/plugin-json@6.0.0(rollup@3.24.1):
+        resolution:
+            {
+                integrity: sha512-i/4C5Jrdr1XUarRhVu27EEwjt4GObltD7c+MkCIpO2QIbojw8MUs+CCTqOphQi3Qtg1FLmYt+l+6YeoIf51J7w==,
+            }
+        engines: { node: ">=14.0.0" }
+        peerDependencies:
+            rollup: ^1.20.0||^2.0.0||^3.0.0
+        peerDependenciesMeta:
+            rollup:
+                optional: true
+        dependencies:
+            "@rollup/pluginutils": 5.0.2(rollup@3.24.1)
+            rollup: 3.24.1
+        dev: true
+
+    /@rollup/plugin-node-resolve@15.1.0(rollup@3.24.1):
+        resolution:
+            {
+                integrity: sha512-xeZHCgsiZ9pzYVgAo9580eCGqwh/XCEUM9q6iQfGNocjgkufHAqC3exA+45URvhiYV8sBF9RlBai650eNs7AsA==,
+            }
+        engines: { node: ">=14.0.0" }
+        peerDependencies:
+            rollup: ^2.78.0||^3.0.0
+        peerDependenciesMeta:
+            rollup:
+                optional: true
+        dependencies:
+            "@rollup/pluginutils": 5.0.2(rollup@3.24.1)
+            "@types/resolve": 1.20.2
+            deepmerge: 4.3.1
+            is-builtin-module: 3.2.1
+            is-module: 1.0.0
+            resolve: 1.22.2
+            rollup: 3.24.1
+        dev: true
+
+    /@rollup/pluginutils@5.0.2(rollup@3.24.1):
+        resolution:
+            {
+                integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==,
+            }
+        engines: { node: ">=14.0.0" }
+        peerDependencies:
+            rollup: ^1.20.0||^2.0.0||^3.0.0
+        peerDependenciesMeta:
+            rollup:
+                optional: true
+        dependencies:
+            "@types/estree": 1.0.1
+            estree-walker: 2.0.2
+            picomatch: 2.3.1
+            rollup: 3.24.1
+        dev: true
+
     /@sveltejs/adapter-auto@2.1.0(@sveltejs/kit@1.20.2):
         resolution:
             {
@@ -1286,6 +1365,21 @@ packages:
         dependencies:
             "@sveltejs/kit": 1.20.2(svelte@3.59.1)(vite@4.3.9)
             import-meta-resolve: 3.0.0
+        dev: true
+
+    /@sveltejs/adapter-node@1.2.4(@sveltejs/kit@1.20.2):
+        resolution:
+            {
+                integrity: sha512-TNnhS+OKRZ9RKnC+ho5mlE2FJquI61i0v7yOXxBUSU3LAoYH2kwVVL8P8ecjefmZ8BOfM1V54pBnDODBU5CEaA==,
+            }
+        peerDependencies:
+            "@sveltejs/kit": ^1.0.0
+        dependencies:
+            "@rollup/plugin-commonjs": 24.1.0(rollup@3.24.1)
+            "@rollup/plugin-json": 6.0.0(rollup@3.24.1)
+            "@rollup/plugin-node-resolve": 15.1.0(rollup@3.24.1)
+            "@sveltejs/kit": 1.20.2(svelte@3.59.1)(vite@4.3.9)
+            rollup: 3.24.1
         dev: true
 
     /@sveltejs/kit@1.20.2(svelte@3.59.1)(vite@4.3.9):
@@ -1455,6 +1549,13 @@ packages:
             "@types/ms": 0.7.31
         dev: true
 
+    /@types/estree@1.0.1:
+        resolution:
+            {
+                integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==,
+            }
+        dev: true
+
     /@types/is-ci@3.0.0:
         resolution:
             {
@@ -1517,6 +1618,13 @@ packages:
         resolution:
             {
                 integrity: sha512-SnHmG9wN1UVmagJOnyo/qkk0Z7gejYxOYYmaAwr5u2yFYfsupN3sg10kyzN8Hep/2zbHxCnsumxOoRIRMBwKCg==,
+            }
+        dev: true
+
+    /@types/resolve@1.20.2:
+        resolution:
+            {
+                integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==,
             }
         dev: true
 
@@ -2181,6 +2289,14 @@ packages:
         dependencies:
             base64-js: 1.5.1
             ieee754: 1.2.1
+        dev: true
+
+    /builtin-modules@3.3.0:
+        resolution:
+            {
+                integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==,
+            }
+        engines: { node: ">=6" }
         dev: true
 
     /busboy@1.6.0:
@@ -4227,6 +4343,16 @@ packages:
             has-tostringtag: 1.0.0
         dev: true
 
+    /is-builtin-module@3.2.1:
+        resolution:
+            {
+                integrity: sha512-BSLE3HnV2syZ0FK0iMA/yUGplUeMmNz4AW5fnTunbCIqZi4vG3WjJT9FHMy5D69xmAYBHXQhJdALdpwVxV501A==,
+            }
+        engines: { node: ">=6" }
+        dependencies:
+            builtin-modules: 3.3.0
+        dev: true
+
     /is-callable@1.2.7:
         resolution:
             {
@@ -4307,6 +4433,13 @@ packages:
             is-extglob: 2.1.1
         dev: true
 
+    /is-module@1.0.0:
+        resolution:
+            {
+                integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==,
+            }
+        dev: true
+
     /is-negative-zero@2.0.2:
         resolution:
             {
@@ -4362,6 +4495,15 @@ packages:
             {
                 integrity: sha512-+lP4/6lKUBfQjZ2pdxThZvLUAafmZb8OAxFb8XXtiQmS35INgr85hdOGoEs124ez1FCnZJt6jau/T+alh58QFQ==,
             }
+        dev: true
+
+    /is-reference@1.2.1:
+        resolution:
+            {
+                integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==,
+            }
+        dependencies:
+            "@types/estree": 1.0.1
         dev: true
 
     /is-regex@1.1.4:
