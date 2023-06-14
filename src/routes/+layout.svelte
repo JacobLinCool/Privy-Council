@@ -15,18 +15,12 @@
 		<div class="top-3 flex-none transition-all group-hover:top-0">
 			<ul class="menu menu-horizontal px-1">
 				<li>
-					<a href="/home">
-						<Icon icon="octicon:apps-16" inline />
-						<span class="hidden sm:inline-block">{$t("nav.home")}</span>
-					</a>
-				</li>
-				<li>
 					<a href="/trending">
 						<Icon icon="octicon:git-commit-16" inline />
 						<span class="hidden sm:inline-block">{$t("nav.trending")}</span>
 					</a>
 				</li>
-				{#if data.user != null}
+				{#if data.user}
 					<li>
 						<a href="/@{data.user.namespace_name}/manage">
 							<Icon icon="octicon:book-16" inline />
@@ -40,7 +34,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="/">
+						<a href="/auth/logout">
 							<Icon icon="octicon:sign-out-16" inline />
 							<span class="hidden sm:inline-block">{$t("nav.sign-out")}</span>
 						</a>

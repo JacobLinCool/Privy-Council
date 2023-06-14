@@ -23,7 +23,7 @@
 
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/councilor/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -32,7 +32,7 @@
 				</a>
 				{#each data.namespace.councilors as councilor}
 					<a
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/councilor/{councilor.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -51,7 +51,7 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/committee/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -60,7 +60,7 @@
 				</a>
 				{#each data.namespace.committees as committee}
 					<a
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/committee/{committee.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -78,7 +78,7 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/library/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -87,7 +87,7 @@
 				</a>
 				{#each data.namespace.libraries as library}
 					<a
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/library/{library.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -106,7 +106,7 @@
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
 					<a
-						class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/create-team"
 					>
 						<div class="card-body flex items-center justify-center">
@@ -115,7 +115,7 @@
 					</a>
 					{#each data.namespace.user.memberships as membership}
 						<a
-							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.team.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
@@ -137,7 +137,7 @@
 				<div class="carousel w-full space-x-4 p-4">
 					{#each data.namespace.team.memberships as membership}
 						<a
-							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.user.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">

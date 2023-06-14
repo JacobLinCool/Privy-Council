@@ -3,6 +3,7 @@
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
 	import Markdown from "svelte-markdown";
+	import { page } from "$app/stores";
 
 	export let data: PageData;
 
@@ -71,16 +72,25 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.councilors as councilor}
-					<button
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						disabled
+					<a
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/councilor/{councilor.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{councilor.name}</p>
 							<p class="text-sm">{councilor.model}</p>
 						</div>
-					</button>
+					</a>
 				{/each}
+				{#if data.namespace.councilors.length === 0}
+					<div
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{$t("no-item")}</p>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div>
@@ -91,16 +101,25 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.committees as committee}
-					<button
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						disabled
+					<a
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/committee/{committee.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{committee.name}</p>
 							<p class="text-sm">{committee.visibility ? "public" : "private"}</p>
 						</div>
-					</button>
+					</a>
 				{/each}
+				{#if data.namespace.committees.length === 0}
+					<div
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{$t("no-item")}</p>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div>
@@ -110,16 +129,25 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.libraries as library}
-					<button
-						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						disabled
+					<a
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/library/{library.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{library.name}</p>
 							<p class="text-sm">{library.visibility ? "public" : "private"}</p>
 						</div>
-					</button>
+					</a>
 				{/each}
+				{#if data.namespace.libraries.length === 0}
+					<div
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{$t("no-item")}</p>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 		{#if data.namespace.user}
@@ -130,16 +158,25 @@
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
 					{#each data.namespace.user.memberships as membership}
-						<button
-							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-							disabled
+						<a
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							href="/@{membership.team.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{membership.team.name}</p>
 								<p class="text-sm">{membership.role}</p>
 							</div>
-						</button>
+						</a>
 					{/each}
+					{#if data.namespace.user.memberships.length === 0}
+						<div
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						>
+							<div class="card-body flex flex-col items-center justify-center">
+								<p class="text-lg font-bold">{$t("no-item")}</p>
+							</div>
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/if}
@@ -152,16 +189,25 @@
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
 					{#each data.namespace.team.memberships as membership}
-						<button
-							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-							disabled
+						<a
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							href="/@{membership.user.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{membership.user.name}</p>
 								<p class="text-sm">{membership.role}</p>
 							</div>
-						</button>
+						</a>
 					{/each}
+					{#if data.namespace.team.memberships.length === 0}
+						<div
+							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						>
+							<div class="card-body flex flex-col items-center justify-center">
+								<p class="text-lg font-bold">{$t("no-item")}</p>
+							</div>
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/if}

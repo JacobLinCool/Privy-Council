@@ -1,82 +1,87 @@
 {
+	"action": "Action",
+	"add": "Add",
+	"admin": "Admin",
+	"ask-it-something": "Ask It Something?",
 	"auth": {
 		"invalid-token": "Invalid Token",
 		"signing-in": "Signing In"
 	},
+	"base-model": "Base Model",
+	"clone": "Clone",
+	"committee": "Committee",
+	"content": "Content",
+	"conversation": "Conversation",
+	"councilor": "Councilor",
+	"create": "Create",
+	"create-new-committee": {
+		"description": "Committee is....",
+		"title": "Create new committee"
+	},
+	"create-new-councilor": {
+		"description": "Councilor is....",
+		"title": "Create new councilor"
+	},
+	"create-new-library": {
+		"description": "Library is....",
+		"title": "Create new library"
+	},
+	"create-new-team": {
+		"description": "Team is....",
+		"title": "Create new team"
+	},
+	"delete": "Delete",
+	"delete-confirm": "Confirm irreversible action?",
+	"delete-team": "Delete team",
+	"edit": "Edit",
+	"email": "Email",
+	"features": {
+		"autonomous": {
+			"decription": "Autonomous Some decription",
+			"title": "Autonomous"
+		},
+		"no-code-api": {
+			"decription": "No Code API Some decription",
+			"title": "No Code API"
+		},
+		"reusability": {
+			"decription": "Reusability Some decription",
+			"title": "Reusability"
+		},
+		"sharable": {
+			"decription": "Sharable Some decription",
+			"title": "Sharable"
+		},
+		"title": "Features"
+	},
+	"i-am-sure": "I am sure.",
 	"intro": {
 		"enter-your-email": "Enter your email",
 		"join": "Join",
 		"try-it-out": "Try It Out"
 	},
+	"lead": "Lead",
+	"leave": "Leave",
+	"library": "Library",
+	"log": "Log",
+	"member": "Member",
+	"name": "Name",
 	"nav": {
 		"home": "Home",
-		"trending": "Trending",
 		"manage": "Manage",
 		"profile": "Profile",
-		"sign-out": "Sign out"
+		"sign-out": "Sign out",
+		"trending": "Trending"
 	},
-	"welcome": "Welcome to Privy Council LLM",
-	"with-tech": "Privy Council LLM is an AI dialogue generation platform that enables users to create and manage multiple AI characters for more reliable and complex conversations.",
-	"features": {
-		"title": "Features",
-		"autonomous": {
-			"title": "Autonomous",
-			"decription": "Autonomous Some decription"
-		},
-		"reusability": {
-			"title": "Reusability",
-			"decription": "Reusability Some decription"
-		},
-		"sharable": {
-			"title": "Sharable",
-			"decription": "Sharable Some decription"
-		},
-		"no-code-api": {
-			"title": "No Code API",
-			"decription": "No Code API Some decription"
-		}
-	},
-	"search": "Search",
-	"councilor": "Councilor",
-	"conversation": "Conversation",
-	"committee": "Committee",
-	"library": "Library",
-	"member": "Member",
-	"team": "Team",
-	"create-new-councilor": {
-		"title": "Create new councilor",
-		"description": "Councilor is...."
-	},
-	"name": "Name",
-	"base-model": "Base Model",
-	"trait": "Trait",
-	"create-new-team": {
-		"title": "Create new team",
-		"description": "Team is...."
-	},
-	"email": "Email",
+	"no-item": "No Item",
+	"personal": "Personal",
 	"role": "Role",
-	"action": "Action",
-	"log": "Log",
-	"time": "Time",
-	"delete-team": "Delete team",
-	"leave": "Leave",
-	"admin": "Admin",
-	"delete": "Delete",
-	"edit": "Edit",
-	"clone": "Clone",
-	"ask-it-something": "Ask It Something?",
-	"create-new-committee": {
-		"title": "Create new committee",
-		"description": "Committee is...."
-	},
-	"add": "Add",
-	"create-new-library": {
-		"title": "Create new library",
-		"description": "Library is...."
-	},
+	"save": "Save",
+	"search": "Search",
 	"start-a-conversation": "Start a conversation",
-	"content": "Content",
-	"lead": "Lead",
-	"personal": "Personal"
+	"team": "Team",
+	"time": "Time",
+	"trait": "Trait",
+	"welcome": "Welcome to Privy Council LLM",
+	"with-tech": "Privy Council LLM is an AI dialogue generation platform that enables users to create and manage multiple AI characters for more reliable and complex conversations."
 }
