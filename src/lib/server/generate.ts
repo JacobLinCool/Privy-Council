@@ -282,7 +282,8 @@ export async function start_conversation(input: string, committee_id: number) {
 
 	try {
 		const output = await conversation.generate();
-		return output;
+
+		return { conversation: output, intermediate: conversation.intermediate };
 	} catch {
 		throw new Error("Fail to generate conversation");
 	}
