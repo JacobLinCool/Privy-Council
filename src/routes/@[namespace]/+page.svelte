@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { page } from "$app/stores";
 	import { t } from "svelte-i18n";
+	import Markdown from "svelte-markdown";
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
-	import Markdown from "svelte-markdown";
-	import { page } from "$app/stores";
 
 	export let data: PageData;
 

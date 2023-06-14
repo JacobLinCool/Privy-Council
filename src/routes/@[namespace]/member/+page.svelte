@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Model from "$lib/component/Model.svelte";
+	import { t } from "svelte-i18n";
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
-	import { t } from "svelte-i18n";
 
 	export let data: PageData;
 </script>

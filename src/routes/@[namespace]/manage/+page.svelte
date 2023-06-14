@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { page } from "$app/stores";
 	import { t } from "svelte-i18n";
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
-	import { page } from "$app/stores";
+
 	export let data: PageData;
 
 	const is_personal = data.namespace.user == null ? false : true;
@@ -147,7 +148,7 @@
 						href="/@{$page.params.namespace}/member"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
-							<h2>{$t("manage")}</h2>
+							<h3>{$t("manage")}</h3>
 						</div>
 					</a>
 					{#each data.namespace.team.memberships as membership}

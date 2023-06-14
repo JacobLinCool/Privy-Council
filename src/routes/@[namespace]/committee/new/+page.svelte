@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
 	import { t } from "svelte-i18n";
+	import type { PageData } from "./$types";
 
 	const base_model_list = ["GPT3", "GPT3.5", "GPT4"]; // for test
 </script>

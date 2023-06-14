@@ -1,9 +1,10 @@
 <script lang="ts">
+	import PageTransition from "$lib/component/PageTransition.svelte";
 	import { t } from "svelte-i18n";
 	import Icon from "@iconify/svelte";
 	import "../app.css";
-	import PageTransition from "$lib/component/PageTransition.svelte";
 	import type { LayoutData } from "./$types";
+
 	export let data: LayoutData;
 </script>
 

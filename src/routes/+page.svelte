@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { t } from "svelte-i18n";
 	import { page } from "$app/stores";
 	import Head from "$lib/component/Head.svelte";
+	import { t } from "svelte-i18n";
 	import type { Route } from "@playwright/test";
 	import type { PageData } from "./$types";
 
