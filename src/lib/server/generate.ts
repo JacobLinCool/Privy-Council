@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
 import { prisma } from "$lib/server/prisma";
-import { stringify } from "querystring";
 
 const configuration = new Configuration({
 	apiKey: env.OPENAI_API_KEY,
@@ -22,13 +21,76 @@ class Councilor {
 	}
 
 	async ask(): Promise<string> {
-		if (this.prompt === "") return "";
 		console.log("prompt: ", this.prompt, "[prompt END]");
 		const respond = await openai.createChatCompletion({
 			model: this.model,
 			messages: [{ role: "user", content: this.prompt }],
 		});
 		return respond.data.choices[0].message?.content || "";
+	}
+
+	async ask_divide_work(councilors: Councilor[]): Promise<string[]> {
+		if (this.model != "gpt-3.5-turbo-0613" && this.model != "gpt-4-0613-4") {
+			console.log("prompt: ", this.prompt, "[prompt END]");
+			const respond = await openai.createChatCompletion({
+				model: this.model,
+				messages: [{ role: "user", content: this.prompt }],
+			});
+			const work_string = respond.data.choices[0].message?.content || "";
+			//this.works = respond.split("\n");
+			// respond split by [START] and [FINISH], save the string after [START] and before [FINISH]
+			let works = work_string.split(/\[START\]|\[FINISH\]/g).filter((x) => x !== "");
+			// remove all '\n', and remove all empty string
+			works = works.map((x) => x.replace(/\n/g, "")).filter((x) => x !== "");
+			// remove all string with only space
+			works = works.filter((x) => x.replace(/\s/g, "") !== "");
+
+			return works;
+		} else {
+			console.log("send respond...");
+
+			const works: string[] = [];
+
+			for (let i = 0; i < councilors.length; i++) {
+				const prompt =
+					this.prompt +
+					"Now you need to deside what " +
+					councilors[i].name +
+					" should do.";
+
+				const respond = await openai.createChatCompletion({
+					model: this.model,
+					messages: [
+						{
+							role: "user",
+							content: prompt,
+						},
+					],
+					functions: [
+						{
+							name: "divide_works",
+							description: "Divde work to each worker",
+							parameters: {
+								type: "object",
+								properties: {
+									worker: { type: "string" },
+									work: { type: "string" },
+								},
+							},
+						},
+					],
+					function_call: { name: "divide_works" },
+				});
+
+				const work_json = respond.data.choices[0].message?.function_call?.arguments;
+				if (work_json === undefined) return [];
+				const work = JSON.parse(work_json).work;
+
+				works.push(work);
+			}
+
+			return works;
+		}
 	}
 }
 
@@ -79,22 +141,11 @@ class Committee {
 	async divide_work(input: string) {
 		const divide_speaker = this.create_divide_speaker(input);
 
-		let respond: string;
 		try {
-			respond = await divide_speaker.ask();
+			this.works = await divide_speaker.ask_divide_work(this.councilors);
 		} catch {
-			throw console.log("fail to divide works");
+			throw new Error("fail to divide works");
 		}
-
-		console.log(respond);
-
-		//this.works = respond.split("\n");
-		// respond split by [START] and [FINISH], save the string after [START] and before [FINISH]
-		this.works = respond.split(/\[START\]|\[FINISH\]/g).filter((x) => x !== "");
-		// remove all '\n', and remove all empty string
-		this.works = this.works.map((x) => x.replace(/\n/g, "")).filter((x) => x !== "");
-		// remove all string with only space
-		this.works = this.works.filter((x) => x.replace(/\s/g, "") !== "");
 
 		console.log("this.works: ", this.works);
 
@@ -114,7 +165,7 @@ class Committee {
 				this.final_works[i] = await this.councilors[i].ask();
 				console.log('"""' + this.final_works[i] + '"""');
 			} catch {
-				throw console.log(this.councilors[i].name + "fail to finish work");
+				throw new Error(this.councilors[i].name + "fail to finish work");
 			}
 		}
 	}
@@ -132,7 +183,7 @@ class Committee {
 				final = await final_speaker.ask();
 				console.log("CHECK:", final);
 			} catch {
-				throw console.log("fail to check");
+				throw new Error("fail to check");
 			}
 			if (final.toLocaleLowerCase().includes("yes")) {
 				allow = true;
@@ -171,9 +222,9 @@ class Conversation {
 	async generate() {
 		await this.committee.divide_work(this.input);
 		console.log("divwork fin");
-		let output = await this.committee.finish_work(this.input);
+		const output = await this.committee.finish_work(this.input);
 		console.log("finwork fin");
-		this.intermediate = this.committee.final_works;
+		this.intermediate = this.committee.works;
 		return output;
 	}
 }
@@ -212,6 +263,8 @@ export async function start_conversation(input: string, committee_id: number) {
 			},
 		},
 	});
+	if (data == null) throw Error("can not get data");
+
 	const speaker = new Councilor(data.speaker.name, data.speaker.model, data.speaker.trait);
 	const councilors: Councilor[] = [];
 
@@ -227,11 +280,16 @@ export async function start_conversation(input: string, committee_id: number) {
 	const committee = new Committee(speaker, councilors);
 	const conversation = new Conversation(input, committee);
 
-	let output: any;
 	try {
-		output = await conversation.generate();
-		return output;
+		const conversation_output = await conversation.generate();
+
+		let intermediate_output = "";
+		conversation.intermediate.forEach((work: string) => {
+			intermediate_output += work + "\n";
+		});
+
+		return { conversation: conversation_output, intermediate: intermediate_output };
 	} catch {
-		return output;
+		throw new Error("Fail to generate conversation");
 	}
 }
