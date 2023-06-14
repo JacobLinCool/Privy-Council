@@ -280,15 +280,15 @@ export async function start_conversation(input: string, committee_id: number) {
 	const committee = new Committee(speaker, councilors);
 	const conversation = new Conversation(input, committee);
 
-	let intermediate = "";
-	conversation.intermediate.forEach((work) => {
-		intermediate += work;
-	});
-
 	try {
-		const output = await conversation.generate();
+		const conversation_output = await conversation.generate();
 
-		return { conversation: output, intermediate: intermediate };
+		let intermediate_output = "";
+		conversation.intermediate.forEach((work: string) => {
+			intermediate_output += work + "\n";
+		});
+
+		return { conversation: conversation_output, intermediate: intermediate_output };
 	} catch {
 		throw new Error("Fail to generate conversation");
 	}
