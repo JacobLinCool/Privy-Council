@@ -197,7 +197,7 @@ export const actions: Actions = {
 			},
 		});
 
-		log(`Create Councilor "${cloned_library.name}"`, locals.user.email, params.namespace);
+		log(`Create Councilor "${cloned_library.name}"`, locals.user.email, to_namespace);
 		throw redirect(302, `/@${to_namespace}/library/${cloned_library.id}`);
 	},
 };

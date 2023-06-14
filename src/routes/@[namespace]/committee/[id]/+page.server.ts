@@ -202,7 +202,7 @@ export const actions: Actions = {
 			},
 		});
 
-		log(`Create Committee "${cloned_committee.name}"`, locals.user.email, params.namespace);
+		log(`Create Committee "${cloned_committee.name}"`, locals.user.email, to_namespace);
 		throw redirect(302, `/@${to_namespace}/committee/${cloned_committee.id}`);
 	},
 	start: async ({ locals, params, request }) => {
