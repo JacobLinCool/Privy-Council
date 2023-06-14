@@ -233,22 +233,21 @@ export const actions: Actions = {
 			return;
 		}
 		console.log("send conversation");
-		const final = await start_conversation(input, parseInt(params.id));
 
 		// handle error in final, the output in final: string | Error
-		if (final instanceof Error || !final) {
+		/*if (final instanceof Error || !final) {
 			console.log(final);
 			return { success: false };
 		}
-		console.log(final);
+		console.log(final);*/
 
 		//const final = "Hello World";
 
 		const conversation = await prisma.conversation.create({
 			data: {
 				input: input,
-				immediate: final.intermediate,
-				final: final.conversation,
+				immediate: "",
+				final: "",
 				namespace: {
 					connect: {
 						name: committee.namespace_name,
@@ -261,6 +260,8 @@ export const actions: Actions = {
 				},
 			},
 		});
+
+		start_conversation(input, parseInt(params.id), conversation.id);
 
 		log(`Create Conversation on "${committee.name}"`, locals.user.email, params.namespace);
 		throw redirect(302, `/@${committee.namespace_name}/conversation/${conversation.id}`);
