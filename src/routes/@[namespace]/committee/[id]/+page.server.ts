@@ -247,8 +247,8 @@ export const actions: Actions = {
 		const conversation = await prisma.conversation.create({
 			data: {
 				input: input,
-				immediate: "",
-				final: final,
+				immediate: final.intermediate,
+				final: final.conversation,
 				namespace: {
 					connect: {
 						name: committee.namespace_name,
