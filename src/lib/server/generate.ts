@@ -47,7 +47,6 @@ class Councilor {
 
 			return works;
 		} else {
-			console.log("prompt: ", this.prompt, "[prompt END]");
 			const respond = await openai.createChatCompletion({
 				model: this.model,
 				messages: [{ role: "user", content: this.prompt }],
@@ -56,24 +55,21 @@ class Councilor {
 						name: "divide_works",
 						description: "Divde work to each workers",
 						parameters: {
-							type: "object",
-							properties: [
-								{
-									worker: {
-										type: "string",
-										description: "the worker name",
-									},
-									work: {
-										type: "string",
-										description: "the worker should do",
-									},
+							type: "array",
+							items: {
+								type: "object",
+								properties: {
+									worker: { type: "string" },
+									work: { type: "string" },
 								},
-							],
+							},
 						},
 					},
 				],
-				function_call: "auto",
+				function_call: { name: "divide_works" },
 			});
+
+			console.log("RESPOND", respond.data.choices[0]);
 
 			if (!respond.data.choices[0].message?.content) {
 				throw new Error();
