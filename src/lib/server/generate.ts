@@ -29,7 +29,7 @@ class Councilor {
 		return respond.data.choices[0].message?.content || "";
 	}
 
-	async ask_divide_work(): Promise<string[]> {
+	async ask_divide_work(councilors: Councilor[]): Promise<string[]> {
 		if (this.model != "gpt-3.5-turbo-0613" && this.model != "gpt-4-0613-4") {
 			console.log("prompt: ", this.prompt, "[prompt END]");
 			const respond = await openai.createChatCompletion({
@@ -48,56 +48,45 @@ class Councilor {
 			return works;
 		} else {
 			console.log("send respond...");
-			const respond = await openai.createChatCompletion({
-				model: this.model,
-				messages: [{ role: "user", content: this.prompt }],
-				functions: [
-					{
-						name: "divide_works",
-						description: "Divde work to each workers",
-						parameters: {
-							type: "object",
-							properties: {
-								task1: {
-									type: "object",
-									properties: {
-										worker: { type: "string" },
-										work: { type: "string" },
-									},
-								},
-								task2: {
-									type: "object",
-									properties: {
-										worker: { type: "string" },
-										work: { type: "string" },
-									},
-								},
-								task3: {
-									type: "object",
-									properties: {
-										worker: { type: "string" },
-										work: { type: "string" },
-									},
+
+			const works: string[] = [];
+
+			for (let i = 0; i < councilors.length; i++) {
+				const prompt =
+					this.prompt +
+					"Now you need to deside what " +
+					councilors[i].name +
+					" should do.";
+
+				const respond = await openai.createChatCompletion({
+					model: this.model,
+					messages: [
+						{
+							role: "user",
+							content: prompt,
+						},
+					],
+					functions: [
+						{
+							name: "divide_works",
+							description: "Divde work to each worker",
+							parameters: {
+								type: "object",
+								properties: {
+									worker: { type: "string" },
+									work: { type: "string" },
 								},
 							},
 						},
-					},
-				],
-				function_call: { name: "divide_works" },
-			});
+					],
+					function_call: { name: "divide_works" },
+				});
 
-			console.log("RESPOND", respond);
+				const work_json = respond.data.choices[0].message?.function_call?.arguments;
+				if (work_json === undefined) return [];
+				const work = JSON.parse(work_json).work;
 
-			if (!respond.data.choices[0].message?.content) {
-				throw new Error();
-			}
-
-			const works_json: { worker: string; work: string }[] = JSON.parse(
-				respond.data.choices[0].message?.content,
-			);
-			const works: string[] = [];
-			for (let i = 0; i < works_json.length; i++) {
-				works.push(works_json[i].work);
+				works.push(work);
 			}
 
 			return works;
@@ -152,14 +141,11 @@ class Committee {
 	async divide_work(input: string) {
 		const divide_speaker = this.create_divide_speaker(input);
 
-		let respond: string[];
 		try {
-			respond = await divide_speaker.ask_divide_work();
+			this.works = await divide_speaker.ask_divide_work(this.councilors);
 		} catch {
 			throw console.log("fail to divide works");
 		}
-
-		console.log(respond);
 
 		console.log("this.works: ", this.works);
 
@@ -238,7 +224,7 @@ class Conversation {
 		console.log("divwork fin");
 		const output = await this.committee.finish_work(this.input);
 		console.log("finwork fin");
-		this.intermediate = this.committee.final_works;
+		this.intermediate = this.committee.works;
 		return output;
 	}
 }
