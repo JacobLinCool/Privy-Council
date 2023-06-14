@@ -1,15 +1,17 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
-
-	export let data: PageData;
+	import { t } from "svelte-i18n";
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<form method="POST" action="?/create-team">
-		<label>
-			Name
-			<input name="name" type="text" />
-		</label>
-		<button>Create</button>
-	</form>
+	<div class="prose">
+		<h1>{$t("create-new-team.title")}</h1>
+		<form method="POST">
+			<h2 style="padding-top:10%">
+				{$t("name")}
+				<input name="name" type="text" class="input w-full max-w-xs" />
+			</h2>
+			<button class="btn">{$t("create")}</button>
+		</form>
+		<p>{$t("create-new-team.description")}</p>
+	</div>
 </div>

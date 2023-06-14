@@ -63,38 +63,12 @@ export const actions: Actions = {
 			throw redirect(302, "/");
 		}
 
-		const data_content = [
-			"apple",
-			"cherry",
-			"durian",
-			"eggplant",
-			"fig",
-			"grape",
-			"honeydew",
-			"ice cream",
-			"jackfruit",
-			"kiwi",
-			"lemon",
-			"mango",
-			"nectarine",
-			"orange",
-			"pineapple",
-			"quince",
-			"raspberry",
-			"strawberry",
-			"tangerine",
-			"ugli",
-			"vanilla",
-			"watermelon",
-			"xigua",
-			"yuzu",
-			"zucchini",
-		];
-		/*const data = await request.formData();
-		const data_content = data.get("data_content")?.toString();
+		//const data_content = ["apple","cherry","durian","eggplant","fig","grape"];
+		const data = await request.formData();
+		const data_content = data.getAll("data_content").map((content) => content.toString());
 		if (!data_content) {
 			return;
-		}*/
+		}
 
 		const library = await prisma.library.findUnique({
 			where: {

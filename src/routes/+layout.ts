@@ -9,5 +9,21 @@ export const load: LayoutLoad = async ({ data }) => {
 	}
 	await waitLocale();
 
-	return data;
+	if (data.user) {
+		return {
+			...data,
+			editables: [
+				data.user.namespace_name,
+				data.user.memberships.map((m) => m.team.namespace_name),
+			].flat(),
+			owned: [
+				data.user.namespace_name,
+				data.user.memberships
+					.filter((m) => m.role === "admin")
+					.map((m) => m.team.namespace_name),
+			].flat(),
+		};
+	} else {
+		return { ...data, editables: [], owned: [] };
+	}
 };

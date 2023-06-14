@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad, Actions } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
+import { redirect } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!locals.user) {
@@ -14,24 +14,61 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			name: params.namespace,
 		},
 		include: {
-			team: {
+			user: {
 				include: {
 					memberships: {
+						orderBy: {
+							created: "desc",
+						},
 						include: {
-							user: {
+							team: {
 								select: {
 									name: true,
-									email: true,
+									namespace_name: true,
 								},
 							},
 						},
 					},
 				},
 			},
-			councilors: true,
-			committees: true,
-			libraries: true,
-			conversations: true,
+			team: {
+				include: {
+					memberships: {
+						orderBy: {
+							created: "desc",
+						},
+						include: {
+							user: {
+								select: {
+									name: true,
+									email: true,
+									namespace_name: true,
+								},
+							},
+						},
+					},
+				},
+			},
+			councilors: {
+				orderBy: {
+					created: "desc",
+				},
+			},
+			committees: {
+				orderBy: {
+					created: "desc",
+				},
+			},
+			libraries: {
+				orderBy: {
+					created: "desc",
+				},
+			},
+			conversations: {
+				orderBy: {
+					created: "desc",
+				},
+			},
 		},
 	});
 	if (!namespace) {

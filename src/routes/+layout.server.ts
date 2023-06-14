@@ -12,6 +12,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 							team: {
 								select: {
 									name: true,
+									namespace_name: true,
 								},
 							},
 						},
