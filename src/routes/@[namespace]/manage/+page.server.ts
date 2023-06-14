@@ -16,6 +16,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			name: params.namespace,
 		},
 		include: {
+			user: {
+				include: {
+					memberships: {
+						include: {
+							team: {
+								select: {
+									name: true,
+									namespace_name: true,
+								},
+							},
+						},
+					},
+				},
+			},
 			team: {
 				include: {
 					memberships: {
@@ -24,6 +38,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 								select: {
 									name: true,
 									email: true,
+									namespace_name: true,
 								},
 							},
 						},
