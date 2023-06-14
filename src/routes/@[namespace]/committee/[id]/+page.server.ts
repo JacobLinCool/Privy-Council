@@ -1,8 +1,9 @@
-import { redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
+import { start_conversation } from "$lib/server/generate";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
+import { redirect, error } from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	// TODO: Not Sure Frontend
@@ -84,17 +85,21 @@ export const actions: Actions = {
 			throw redirect(302, "/");
 		}
 
-		const name = "test";
+		/*const name = "test";
 		const lead = 4;
 		const councilor = [1, 4, 10];
-		const library = [1, 2, 3];
-		/*const data = await request.formData();
+		const library = [1, 2, 3];*/
+
+		const data = await request.formData();
 		const name = data.get("name")?.toString();
-		const base_model = data.get("base_model")?.toString();
-		const trait = data.get("trait")?.toString();
-		if (!name || !base_model || !trait) {
+		const lead = parseInt(data.get("lead")?.toString() || "0");
+		const councilor = data
+			.getAll("councilor")
+			.map((councilor) => parseInt(councilor.toString()));
+		const library = data.getAll("library").map((library) => parseInt(library.toString()));
+		if (!name || !lead || !councilor || !library) {
 			return;
-		}*/
+		}
 
 		const committee = await prisma.committee.findUnique({
 			where: {
@@ -201,7 +206,7 @@ export const actions: Actions = {
 			},
 		});
 
-		log(`Create Committee "${cloned_committee.name}"`, locals.user.email, params.namespace);
+		log(`Create Committee "${cloned_committee.name}"`, locals.user.email, to_namespace);
 		throw redirect(302, `/@${to_namespace}/committee/${cloned_committee.id}`);
 	},
 	start: async ({ locals, params, request }) => {
@@ -231,15 +236,22 @@ export const actions: Actions = {
 		if (!input) {
 			return;
 		}
+		console.log("send conversation");
 
-		//const final = await start_conversation(input, params.id);
-		const final = "Hello World";
+		// handle error in final, the output in final: string | Error
+		/*if (final instanceof Error || !final) {
+			console.log(final);
+			return { success: false };
+		}
+		console.log(final);*/
+
+		//const final = "Hello World";
 
 		const conversation = await prisma.conversation.create({
 			data: {
 				input: input,
 				immediate: "",
-				final: final,
+				final: "",
 				namespace: {
 					connect: {
 						name: committee.namespace_name,
@@ -252,6 +264,8 @@ export const actions: Actions = {
 				},
 			},
 		});
+
+		start_conversation(input, parseInt(params.id), conversation.id);
 
 		log(`Create Conversation on "${committee.name}"`, locals.user.email, params.namespace);
 		throw redirect(302, `/@${committee.namespace_name}/conversation/${conversation.id}`);

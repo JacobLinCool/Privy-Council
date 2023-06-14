@@ -1,9 +1,9 @@
-import { redirect, error } from "@sveltejs/kit";
-import type { PageServerLoad, Actions } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable, is_namespace_owner } from "$lib/server/verify";
-import { log } from "$lib/server/log";
 import debug from "debug";
+import { redirect, error } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 
 const console_log = debug("app:team");
 
@@ -22,7 +22,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		include: {
 			team: {
 				include: {
-					logs: is_namespace_owner(locals.user, params.namespace),
+					...(is_namespace_owner(locals.user, params.namespace)
+						? {
+								logs: {
+									include: {
+										user: {
+											select: {
+												name: true,
+											},
+										},
+									},
+								},
+						  }
+						: undefined),
 					memberships: {
 						select: {
 							id: true,
@@ -44,7 +56,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		throw redirect(302, "/");
 	}
 
-	return { namespace };
+	if (!namespace.team) {
+		throw redirect(302, "/");
+	}
+
+	return { team: namespace.team };
 };
 
 export const actions: Actions = {
@@ -158,6 +174,15 @@ export const actions: Actions = {
 				namespace_name: params.namespace,
 			},
 		});
+
+		const email_info = await prisma.user.findUnique({
+			where: {
+				email: email,
+			},
+		});
+		if (!email_info) {
+			throw redirect(302, `/@${params.namespace}/member`);
+		}
 
 		await prisma.membership.create({
 			data: {

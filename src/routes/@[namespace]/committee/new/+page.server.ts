@@ -1,9 +1,9 @@
-import { error, redirect } from "@sveltejs/kit";
-import type { PageServerLoad, Actions } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
 import debug from "debug";
+import { error, redirect } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 
 const console_log = debug("app:councilor:new");
 
@@ -34,17 +34,19 @@ export const actions: Actions = {
 			throw redirect(302, "/");
 		}
 
-		const name = "test";
+		/*const name = "test";
 		const lead = 3;
-		const member = [1, 4];
-		/*const data = await request.formData();
+		const member = [1, 4];*/
+		const data = await request.formData();
 		const name = data.get("name")?.toString();
-		const base_model = data.get("base_model")?.toString();
-		const trait = data.get("trait")?.toString();
-		console_log(name, base_model, trait);
-		if (!name || !base_model || !trait) {
-			throw redirect(302, `/@${params.namespace}/councilor/new`);
-		}*/
+		// get the lead, and convert to int
+		const lead = parseInt(data.get("lead")?.toString() ?? "");
+		// get all member, and convert to the string, then convert to array of int
+		const member = data.getAll("member").map((id) => parseInt(id.toString()));
+		console_log(name, lead, member);
+		if (!name || !lead || !member) {
+			throw redirect(302, `/@${params.namespace}/committee/new`);
+		}
 
 		if (!is_namespace_editable(locals.user, params.namespace)) {
 			throw redirect(302, "/");

@@ -1,17 +1,89 @@
 {
+	"action": "動作",
+	"add": "新增",
+	"admin": "管理員",
+	"ask-it-something": "問問看一些問題吧？",
 	"auth": {
 		"invalid-token": "授權無效",
 		"signing-in": "登入中"
 	},
+	"base-model": "基底模型",
+	"clone": "複製",
+	"committee": "委員會",
+	"content": "寫一些內容",
+	"conversation": "對話",
+	"councilor": "委員",
+	"create": "建立",
+	"create-new-committee": {
+		"description": "委員會是....",
+		"title": "建立新的委員會"
+	},
+	"create-new-councilor": {
+		"description": "委員是....",
+		"title": "建立新的委員"
+	},
+	"create-new-library": {
+		"description": "圖書館是....",
+		"title": "建立新的圖書館"
+	},
+	"create-new-team": {
+		"description": "團隊是....",
+		"title": "建立新的團隊"
+	},
+	"delete": "刪除",
+	"delete-confirm": "確認不可逆之變更？",
+	"delete-team": "刪除團隊",
+	"edit": "編輯",
+	"email": "電子郵件",
+	"features": {
+		"autonomous": {
+			"decription": "自主性一些敘述",
+			"title": "自主性"
+		},
+		"no-code-api": {
+			"decription": "不用打程式呼叫 API一些敘述",
+			"title": "不用打程式呼叫 API"
+		},
+		"reusability": {
+			"decription": "可重用性一些敘述",
+			"title": "可重用性"
+		},
+		"sharable": {
+			"decription": "可分享性一些敘述",
+			"title": "可分享性"
+		},
+		"title": "功能介紹"
+	},
+	"i-am-sure": "我知道我在做什麼",
 	"intro": {
 		"enter-your-email": "輸入你的電子郵件地址",
 		"join": "加入",
 		"try-it-out": "試試看"
 	},
+	"lead": "隊長",
+	"leave": "離開",
+	"library": "圖書館",
+	"log": "記錄",
+	"manage": "管理",
+	"member": "成員",
+	"name": "名稱",
 	"nav": {
 		"home": "首頁",
+		"manage": "管理",
+		"profile": "個人頁面",
+		"sign-out": "登出",
 		"trending": "熱門"
 	},
+	"no-item": "沒有項目",
+	"personal": "個人",
+	"role": "身份",
+	"save": "儲存",
+	"search": "搜尋",
+	"speaker": "發言人",
+	"start-a-conversation": "開始一些對話吧",
+	"team": "團隊",
+	"time": "時間",
+	"trait": "特徵",
 	"welcome": "歡迎使用 Privy Council LLM",
 	"with-tech": "Privy Council LLM 是一個 AI 對話生成平台，允許使用者建立和管理多個 AI 角色，以進行更可靠和複雜的對話。"
 }

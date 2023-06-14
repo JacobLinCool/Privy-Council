@@ -1,7 +1,7 @@
-import { locale, waitLocale } from "svelte-i18n";
-import type { Handle } from "@sveltejs/kit";
-import { checkout } from "sveltekit-jwt";
 import { prisma } from "$lib/server/prisma";
+import { locale, waitLocale } from "svelte-i18n";
+import { checkout } from "sveltekit-jwt";
+import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const lang = event.request.headers.get("accept-language")?.split(",")[0] || "en";

@@ -1,9 +1,9 @@
+import { prisma } from "$lib/server/prisma";
 import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
-import { prisma } from "$lib/server/prisma";
 
 export const actions: Actions = {
-	"create-team": async ({ locals, request }) => {
+	default: async ({ locals, request }) => {
 		if (!locals.user) {
 			throw redirect(302, "/");
 		}

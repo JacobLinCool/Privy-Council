@@ -1,5 +1,5 @@
-import type { LayoutServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const user = locals.token?.sub
@@ -12,6 +12,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 							team: {
 								select: {
 									name: true,
+									namespace_name: true,
 								},
 							},
 						},

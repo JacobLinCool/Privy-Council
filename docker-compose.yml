@@ -1,0 +1,12 @@
+services:
+    server:
+        image: jacoblincool/privy-council
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "${PORT}:${PORT}"
+        env_file:
+            - .env
+        volumes:
+            - ./prisma/dev.db:/app/prisma/dev.db

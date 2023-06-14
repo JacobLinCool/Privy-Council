@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
+import { redirect } from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const library = await prisma.library.findUnique({
@@ -63,38 +63,12 @@ export const actions: Actions = {
 			throw redirect(302, "/");
 		}
 
-		const data_content = [
-			"apple",
-			"cherry",
-			"durian",
-			"eggplant",
-			"fig",
-			"grape",
-			"honeydew",
-			"ice cream",
-			"jackfruit",
-			"kiwi",
-			"lemon",
-			"mango",
-			"nectarine",
-			"orange",
-			"pineapple",
-			"quince",
-			"raspberry",
-			"strawberry",
-			"tangerine",
-			"ugli",
-			"vanilla",
-			"watermelon",
-			"xigua",
-			"yuzu",
-			"zucchini",
-		];
-		/*const data = await request.formData();
-		const data_content = data.get("data_content")?.toString();
+		//const data_content = ["apple","cherry","durian","eggplant","fig","grape"];
+		const data = await request.formData();
+		const data_content = data.getAll("data_content").map((content) => content.toString());
 		if (!data_content) {
 			return;
-		}*/
+		}
 
 		const library = await prisma.library.findUnique({
 			where: {
@@ -197,7 +171,7 @@ export const actions: Actions = {
 			},
 		});
 
-		log(`Create Councilor "${cloned_library.name}"`, locals.user.email, params.namespace);
+		log(`Create Councilor "${cloned_library.name}"`, locals.user.email, to_namespace);
 		throw redirect(302, `/@${to_namespace}/library/${cloned_library.id}`);
 	},
 };

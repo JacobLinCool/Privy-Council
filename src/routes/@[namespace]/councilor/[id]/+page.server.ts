@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
+import { redirect } from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const councilor = await prisma.councilor.findUnique({
@@ -139,7 +139,7 @@ export const actions: Actions = {
 			},
 		});
 
-		log(`Create Councilor "${cloned_councilor.name}"`, locals.user.email, params.namespace);
+		log(`Create Councilor "${cloned_councilor.name}"`, locals.user.email, to_namespace);
 		throw redirect(302, `/@${to_namespace}/councilor/${cloned_councilor.id}`);
 	},
 };
