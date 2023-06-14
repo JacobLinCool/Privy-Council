@@ -6,14 +6,21 @@
 	export let data: PageData;
 
 	const is_personal = data.namespace.user == null ? false : true;
+	const name = data.namespace.user?.name || data.namespace.team?.name || "";
 </script>
 
 <div class="flex h-full w-full justify-center overflow-auto px-4 py-24">
 	<div class="prose w-full">
-		<div>
+		{#if is_personal}
+			<h5>Personal</h5>
+		{:else}
+			<h5>Team</h5>
+		{/if}
+		<h1>{name}</h1>
+		<!-- <div>
 			<input type="text" placeholder="Search" class="input w-full max-w-xs" />
 			<button class="btn">{$t("search")}</button>
-		</div>
+		</div> -->
 		<div>
 			<h2>
 				{$t("councilor")}
@@ -116,7 +123,7 @@
 					{#each data.namespace.user.memberships as membership}
 						<a
 							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-							href="/@{membership.team.namespace_name}"
+							href="/@{membership.team.namespace_name}/manage"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{membership.team.name}</p>
@@ -135,6 +142,14 @@
 				</h2>
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
+					<a
+						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/member"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<h2>{$t("manage")}</h2>
+						</div>
+					</a>
 					{#each data.namespace.team.memberships as membership}
 						<a
 							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"

@@ -22,7 +22,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		include: {
 			team: {
 				include: {
-					logs: is_namespace_owner(locals.user, params.namespace),
+					...(is_namespace_owner(locals.user, params.namespace)
+						? {
+								logs: {
+									include: {
+										user: {
+											select: {
+												name: true,
+											},
+										},
+									},
+								},
+						  }
+						: undefined),
 					memberships: {
 						select: {
 							id: true,
@@ -44,7 +56,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		throw redirect(302, "/");
 	}
 
-	return { namespace };
+	if (!namespace.team) {
+		throw redirect(302, "/");
+	}
+
+	return { team: namespace.team };
 };
 
 export const actions: Actions = {
