@@ -1,69 +1,94 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
 	import { t } from "svelte-i18n";
+	import Icon from "@iconify/svelte";
+	import type { PageData } from "./$types";
+	import Markdown from "svelte-markdown";
+	import { page } from "$app/stores";
+
 	export let data: PageData;
 
-	let pencil_mode = false;
-	function pencil() {
-		pencil_mode = !pencil_mode;
-	}
 	const is_personal = data.namespace.user == null ? false : true;
-	const is_team = data.namespace.team == null ? false : true;
+
+	let edit_mode = false;
+	let name = data.namespace.user?.name || data.namespace.team?.name || "";
+	let bio = data.namespace.user?.bio || data.namespace.team?.bio || "";
 </script>
 
-<div class="flex h-full w-full justify-center overflow-auto" style="padding-top:10%">
-	<div class="prose">
-		<div style="width:100%;word-wrap:break-word">
+<div class="flex h-full w-full justify-center overflow-auto px-4 py-24">
+	<div class="prose w-full">
+		<div class="w-full break-words">
 			{#if is_personal}
 				<h5>Personal</h5>
-			{:else if is_team}
+			{:else}
 				<h5>Team</h5>
 			{/if}
-			{#if pencil_mode}
-				<form method="POST">
-					<input
-						type="text"
-						name="name"
-						class="input-bordered input input-lg w-full max-w-xs"
-						value={data.namespace.user?.name || data.namespace.team?.name}
-					/>
-					<textarea
-						class="textarea"
-						name="bio"
-						style="width:150%;height:150%;overflow-x:visible;overflow-y:visible;"
-						value={data.namespace.user?.bio || data.namespace.team?.bio}
-					/>
-					<button class="btn">Save</button>
-				</form>
-			{:else}
-				<h1>{data.namespace.user?.name || data.namespace.team?.name}</h1>
-				<p>{data.namespace.user?.bio || data.namespace.team?.bio}</p>
-				<button on:click={pencil} class="btn">Pencil here</button>
-			{/if}
+			<form method="POST" class="flex w-full items-start justify-between gap-4">
+				<div class="flex-1">
+					{#if edit_mode}
+						<input
+							type="text"
+							name="name"
+							class="input-bordered input-ghost input mb-4 w-full text-xl font-bold transition-all hover:input-primary"
+							bind:value={name}
+						/>
+						<br />
+						<textarea
+							class="textarea-bordered textarea-ghost textarea w-full transition-all hover:input-primary"
+							name="bio"
+							rows="4"
+							bind:value={bio}
+						/>
+					{:else}
+						<h1>{name}</h1>
+						<div class="max-h-40 overflow-auto">
+							<Markdown source={bio} />
+						</div>
+					{/if}
+				</div>
+				<div class="flex flex-none flex-row">
+					{#if edit_mode}
+						<button class="btn-primary btn-outline btn-square btn">
+							<Icon icon="octicon:check-16" />
+						</button>
+					{:else}
+						<button
+							type="button"
+							on:click={() => (edit_mode = !edit_mode)}
+							class="btn-ghost btn-outline btn-square btn"
+						>
+							<Icon icon="octicon:pencil-16" />
+						</button>
+					{/if}
+				</div>
+			</form>
 		</div>
 		<div>
 			<h2>
 				{$t("councilor")}
 			</h2>
 
-			<hr />
-			<div class="overflow-x-auto">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Update</th>
-						</tr>
-					</thead>
-					{#each data.namespace.councilors as councilor}
-						<tbody>
-							<tr class="hover">
-								<td>{councilor.name}</td>
-								<td>{councilor.updated}</td>
-							</tr>
-						</tbody>
-					{/each}
-				</table>
+			<div class="divider" />
+			<div class="carousel w-full space-x-4 p-4">
+				<a
+					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					href="/@{$page.params.namespace}/councilor/new"
+				>
+					<div class="card-body flex items-center justify-center">
+						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
+						<span>新增</span>
+					</div>
+				</a>
+				{#each data.namespace.councilors as councilor}
+					<a
+						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/councilor/{councilor.id}"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{councilor.name}</p>
+							<p class="text-sm">{councilor.model}</p>
+						</div>
+					</a>
+				{/each}
 			</div>
 		</div>
 		<div>
@@ -71,87 +96,117 @@
 				{$t("committee")}
 			</h2>
 
-			<hr />
-			<div class="overflow-x-auto">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Update</th>
-						</tr>
-					</thead>
-					{#each data.namespace.committees as committee}
-						<tbody>
-							<tr class="hover">
-								<td>{committee.name}</td>
-								<td>{committee.updated}</td>
-							</tr>
-						</tbody>
-					{/each}
-				</table>
-			</div>
-		</div>
-		<div>
-			<h2>
-				{$t("conversation")}
-			</h2>
-			<hr />
-			<div class="overflow-x-auto">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Update</th>
-						</tr>
-					</thead>
-					{#each data.namespace.conversations as conversation}
-						<tbody>
-							<tr class="hover">
-								<td>{conversation.namespace_name}</td>
-								<td>{conversation.updated}</td>
-							</tr>
-						</tbody>
-					{/each}
-				</table>
+			<div class="divider" />
+			<div class="carousel w-full space-x-4 p-4">
+				<a
+					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					href="/@{$page.params.namespace}/committee/new"
+				>
+					<div class="card-body flex items-center justify-center">
+						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
+						<span>新增</span>
+					</div>
+				</a>
+				{#each data.namespace.committees as committee}
+					<a
+						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/committee/{committee.id}"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{committee.name}</p>
+							<p class="text-sm">{committee.visibility ? "public" : "private"}</p>
+						</div>
+					</a>
+				{/each}
 			</div>
 		</div>
 		<div>
 			<h2>
 				{$t("library")}
 			</h2>
-			<hr />
-			<div class="overflow-x-auto">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Update</th>
-						</tr>
-					</thead>
-					{#each data.namespace.libraries as library}
-						<tbody>
-							<tr class="hover">
-								<td>{library.name}</td>
-								<td>{library.updated}</td>
-							</tr>
-						</tbody>
-					{/each}
-				</table>
+			<div class="divider" />
+			<div class="carousel w-full space-x-4 p-4">
+				<a
+					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					href="/@{$page.params.namespace}/library/new"
+				>
+					<div class="card-body flex items-center justify-center">
+						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
+						<span>新增</span>
+					</div>
+				</a>
+				{#each data.namespace.libraries as library}
+					<a
+						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/library/{library.id}"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{library.name}</p>
+							<p class="text-sm">{library.visibility ? "public" : "private"}</p>
+						</div>
+					</a>
+				{/each}
 			</div>
 		</div>
-		{#if is_personal}
+		{#if data.namespace.user}
 			<div>
 				<h2>
 					{$t("team")}
 				</h2>
-				<hr />
+				<div class="divider" />
+				<div class="carousel w-full space-x-4 p-4">
+					<a
+						class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/create-team"
+					>
+						<div class="card-body flex items-center justify-center">
+							<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
+							<span>新增</span>
+						</div>
+					</a>
+					{#each data.namespace.user.memberships as membership}
+						<a
+							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							href="/@{membership.team.namespace_name}"
+						>
+							<div class="card-body flex flex-col items-center justify-center">
+								<p class="text-lg font-bold">{membership.team.name}</p>
+								<p class="text-sm">{membership.role}</p>
+							</div>
+						</a>
+					{/each}
+				</div>
 			</div>
-		{:else if is_team}
+		{/if}
+
+		{#if data.namespace.team}
 			<div>
 				<h2>
 					{$t("member")}
 				</h2>
-				<hr />
+				<div class="divider" />
+				<div class="carousel w-full space-x-4 p-4">
+					<a
+						class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/create-team"
+					>
+						<div class="card-body flex items-center justify-center">
+							<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
+							<span>新增</span>
+						</div>
+					</a>
+					{#each data.namespace.team.memberships as membership}
+						<a
+							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							href="/@{membership.user.namespace_name}"
+						>
+							<div class="card-body flex flex-col items-center justify-center">
+								<p class="text-lg font-bold">{membership.user.name}</p>
+								<p class="text-sm">{membership.role}</p>
+							</div>
+						</a>
+					{/each}
+				</div>
 			</div>
 		{/if}
 	</div>
