@@ -84,17 +84,21 @@ export const actions: Actions = {
 			throw redirect(302, "/");
 		}
 
-		const name = "test";
+		/*const name = "test";
 		const lead = 4;
 		const councilor = [1, 4, 10];
-		const library = [1, 2, 3];
-		/*const data = await request.formData();
+		const library = [1, 2, 3];*/
+
+		const data = await request.formData();
 		const name = data.get("name")?.toString();
-		const base_model = data.get("base_model")?.toString();
-		const trait = data.get("trait")?.toString();
-		if (!name || !base_model || !trait) {
+		const lead = parseInt(data.get("lead")?.toString() || "0");
+		const councilor = data
+			.getAll("councilor")
+			.map((councilor) => parseInt(councilor.toString()));
+		const library = data.getAll("library").map((library) => parseInt(library.toString()));
+		if (!name || !lead || !councilor || !library) {
 			return;
-		}*/
+		}
 
 		const committee = await prisma.committee.findUnique({
 			where: {
