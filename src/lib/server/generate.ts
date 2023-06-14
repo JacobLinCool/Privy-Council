@@ -144,7 +144,7 @@ class Committee {
 		try {
 			this.works = await divide_speaker.ask_divide_work(this.councilors);
 		} catch {
-			throw console.log("fail to divide works");
+			throw new Error("fail to divide works");
 		}
 
 		console.log("this.works: ", this.works);
@@ -165,7 +165,7 @@ class Committee {
 				this.final_works[i] = await this.councilors[i].ask();
 				console.log('"""' + this.final_works[i] + '"""');
 			} catch {
-				throw console.log(this.councilors[i].name + "fail to finish work");
+				throw new Error(this.councilors[i].name + "fail to finish work");
 			}
 		}
 	}
@@ -183,7 +183,7 @@ class Committee {
 				final = await final_speaker.ask();
 				console.log("CHECK:", final);
 			} catch {
-				throw console.log("fail to check");
+				throw new Error("fail to check");
 			}
 			if (final.toLocaleLowerCase().includes("yes")) {
 				allow = true;
@@ -263,7 +263,7 @@ export async function start_conversation(input: string, committee_id: number) {
 			},
 		},
 	});
-	if (data == null) return Error("can not get data");
+	if (data == null) throw Error("can not get data");
 
 	const speaker = new Councilor(data.speaker.name, data.speaker.model, data.speaker.trait);
 	const councilors: Councilor[] = [];
@@ -284,6 +284,6 @@ export async function start_conversation(input: string, committee_id: number) {
 		const output = await conversation.generate();
 		return output;
 	} catch {
-		return new Error("Fail to generate conversation");
+		throw new Error("Fail to generate conversation");
 	}
 }
