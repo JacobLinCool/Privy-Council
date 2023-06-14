@@ -45,7 +45,7 @@
 						</div>
 					{/if}
 				</div>
-				{#if data.user?.namespace_name == data.namespace.user?.namespace_name}
+				{#if data.editables.includes(data.namespace.name)}
 					<div class="flex flex-none flex-row">
 						{#if edit_mode}
 							<button class="btn-primary btn-outline btn-square btn">
@@ -73,7 +73,7 @@
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.councilors as councilor}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/councilor/{councilor.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -84,7 +84,7 @@
 				{/each}
 				{#if data.namespace.councilors.length === 0}
 					<div
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{$t("no-item")}</p>
@@ -102,7 +102,7 @@
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.committees as committee}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/committee/{committee.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -113,7 +113,7 @@
 				{/each}
 				{#if data.namespace.committees.length === 0}
 					<div
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{$t("no-item")}</p>
@@ -130,7 +130,7 @@
 			<div class="carousel w-full space-x-4 p-4">
 				{#each data.namespace.libraries as library}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/library/{library.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -141,7 +141,7 @@
 				{/each}
 				{#if data.namespace.libraries.length === 0}
 					<div
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{$t("no-item")}</p>
@@ -159,7 +159,7 @@
 				<div class="carousel w-full space-x-4 p-4">
 					{#each data.namespace.user.memberships as membership}
 						<a
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.team.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
@@ -170,7 +170,7 @@
 					{/each}
 					{#if data.namespace.user.memberships.length === 0}
 						<div
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{$t("no-item")}</p>
@@ -190,7 +190,7 @@
 				<div class="carousel w-full space-x-4 p-4">
 					{#each data.namespace.team.memberships as membership}
 						<a
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.user.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
@@ -201,7 +201,7 @@
 					{/each}
 					{#if data.namespace.team.memberships.length === 0}
 						<div
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{$t("no-item")}</p>

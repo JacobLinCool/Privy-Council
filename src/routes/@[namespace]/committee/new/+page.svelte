@@ -14,7 +14,7 @@
 				<input name="name" type="text" class="input w-full max-w-xs" />
 			</h2>
 			<h2 style="padding-top:10%">
-				{$t("lead")}
+				{$t("speaker")}
 				<select name="lead" class="select w-full max-w-xs">
 					<option disabled selected />
 					{#each base_model_list as model}

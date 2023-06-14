@@ -2,7 +2,6 @@
 	import { page } from "$app/stores";
 	import Head from "$lib/component/Head.svelte";
 	import { t } from "svelte-i18n";
-	import type { Route } from "@playwright/test";
 	import type { PageData } from "./$types";
 
 	const callback = new URL("/auth", $page.url).toString();
@@ -23,7 +22,11 @@
 		<hr />
 
 		<a class="btn-primary btn" href={try_btn_link}>
-			{$t("intro.try-it-out")}
+			{#if data.user}
+				{$t("nav.home")}
+			{:else}
+				{$t("intro.try-it-out")}
+			{/if}
 		</a>
 	</div>
 </div>

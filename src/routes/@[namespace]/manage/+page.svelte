@@ -17,7 +17,9 @@
 		{:else}
 			<h5>Team</h5>
 		{/if}
-		<h1>{name}</h1>
+		<a class="contents" href="/@{$page.params.namespace}">
+			<h1>{name}</h1>
+		</a>
 		<!-- <div>
 			<input type="text" placeholder="Search" class="input w-full max-w-xs" />
 			<button class="btn">{$t("search")}</button>
@@ -31,7 +33,7 @@
 
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/councilor/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -40,7 +42,7 @@
 				</a>
 				{#each data.namespace.councilors as councilor}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/councilor/{councilor.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -59,7 +61,7 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/committee/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -68,7 +70,7 @@
 				</a>
 				{#each data.namespace.committees as committee}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/committee/{committee.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -86,7 +88,7 @@
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
 				<a
-					class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+					class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 					href="/@{$page.params.namespace}/library/new"
 				>
 					<div class="card-body flex items-center justify-center">
@@ -95,7 +97,7 @@
 				</a>
 				{#each data.namespace.libraries as library}
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/library/{library.id}"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -114,7 +116,7 @@
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/create-team"
 					>
 						<div class="card-body flex items-center justify-center">
@@ -123,7 +125,7 @@
 					</a>
 					{#each data.namespace.user.memberships as membership}
 						<a
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.team.namespace_name}/manage"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
@@ -144,7 +146,7 @@
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
 					<a
-						class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 						href="/@{$page.params.namespace}/member"
 					>
 						<div class="card-body flex flex-col items-center justify-center">
@@ -153,7 +155,7 @@
 					</a>
 					{#each data.namespace.team.memberships as membership}
 						<a
-							class="card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+							class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
 							href="/@{membership.user.namespace_name}"
 						>
 							<div class="card-body flex flex-col items-center justify-center">
