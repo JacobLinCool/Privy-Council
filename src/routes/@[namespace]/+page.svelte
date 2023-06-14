@@ -3,7 +3,6 @@
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
 	import Markdown from "svelte-markdown";
-	import { page } from "$app/stores";
 
 	export let data: PageData;
 
@@ -45,21 +44,23 @@
 						</div>
 					{/if}
 				</div>
-				<div class="flex flex-none flex-row">
-					{#if edit_mode}
-						<button class="btn-primary btn-outline btn-square btn">
-							<Icon icon="octicon:check-16" />
-						</button>
-					{:else}
-						<button
-							type="button"
-							on:click={() => (edit_mode = !edit_mode)}
-							class="btn-ghost btn-outline btn-square btn"
-						>
-							<Icon icon="octicon:pencil-16" />
-						</button>
-					{/if}
-				</div>
+				{#if data.user?.namespace_name == data.namespace.user?.namespace_name}
+					<div class="flex flex-none flex-row">
+						{#if edit_mode}
+							<button class="btn-primary btn-outline btn-square btn">
+								<Icon icon="octicon:check-16" />
+							</button>
+						{:else}
+							<button
+								type="button"
+								on:click={() => (edit_mode = !edit_mode)}
+								class="btn-ghost btn-outline btn-square btn"
+							>
+								<Icon icon="octicon:pencil-16" />
+							</button>
+						{/if}
+					</div>
+				{/if}
 			</form>
 		</div>
 		<div>
@@ -69,25 +70,16 @@
 
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
-				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-					href="/@{$page.params.namespace}/councilor/new"
-				>
-					<div class="card-body flex items-center justify-center">
-						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
-						<span>新增</span>
-					</div>
-				</a>
 				{#each data.namespace.councilors as councilor}
-					<a
+					<button
 						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						href="/@{$page.params.namespace}/councilor/{councilor.id}"
+						disabled
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{councilor.name}</p>
 							<p class="text-sm">{councilor.model}</p>
 						</div>
-					</a>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -98,25 +90,16 @@
 
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
-				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-					href="/@{$page.params.namespace}/committee/new"
-				>
-					<div class="card-body flex items-center justify-center">
-						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
-						<span>新增</span>
-					</div>
-				</a>
 				{#each data.namespace.committees as committee}
-					<a
+					<button
 						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						href="/@{$page.params.namespace}/committee/{committee.id}"
+						disabled
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{committee.name}</p>
 							<p class="text-sm">{committee.visibility ? "public" : "private"}</p>
 						</div>
-					</a>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -126,25 +109,16 @@
 			</h2>
 			<div class="divider" />
 			<div class="carousel w-full space-x-4 p-4">
-				<a
-					class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-					href="/@{$page.params.namespace}/library/new"
-				>
-					<div class="card-body flex items-center justify-center">
-						<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
-						<span>新增</span>
-					</div>
-				</a>
 				{#each data.namespace.libraries as library}
-					<a
+					<button
 						class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						href="/@{$page.params.namespace}/library/{library.id}"
+						disabled
 					>
 						<div class="card-body flex flex-col items-center justify-center">
 							<p class="text-lg font-bold">{library.name}</p>
 							<p class="text-sm">{library.visibility ? "public" : "private"}</p>
 						</div>
-					</a>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -155,25 +129,16 @@
 				</h2>
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
-					<a
-						class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						href="/create-team"
-					>
-						<div class="card-body flex items-center justify-center">
-							<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
-							<span>新增</span>
-						</div>
-					</a>
 					{#each data.namespace.user.memberships as membership}
-						<a
+						<button
 							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-							href="/@{membership.team.namespace_name}"
+							disabled
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{membership.team.name}</p>
 								<p class="text-sm">{membership.role}</p>
 							</div>
-						</a>
+						</button>
 					{/each}
 				</div>
 			</div>
@@ -186,25 +151,16 @@
 				</h2>
 				<div class="divider" />
 				<div class="carousel w-full space-x-4 p-4">
-					<a
-						class="card-bordered card w-40 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-						href="/create-team"
-					>
-						<div class="card-body flex items-center justify-center">
-							<Icon icon="octicon:plus-16" class="inline-block text-xl font-bold" />
-							<span>新增</span>
-						</div>
-					</a>
 					{#each data.namespace.team.memberships as membership}
-						<a
+						<button
 							class="card-bordered card bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
-							href="/@{membership.user.namespace_name}"
+							disabled
 						>
 							<div class="card-body flex flex-col items-center justify-center">
 								<p class="text-lg font-bold">{membership.user.name}</p>
 								<p class="text-sm">{membership.role}</p>
 							</div>
-						</a>
+						</button>
 					{/each}
 				</div>
 			</div>
