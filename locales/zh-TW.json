@@ -21,25 +21,61 @@
 		"title": "功能介紹",
 		"autonomous": {
 			"title": "自主性",
-			"decription": "一些敘述"
+			"decription": "自主性一些敘述"
 		},
 		"reusability": {
 			"title": "可重用性",
-			"decription": "一些敘述"
+			"decription": "可重用性一些敘述"
 		},
 		"sharable": {
 			"title": "可分享性",
-			"decription": "一些敘述"
+			"decription": "可分享性一些敘述"
 		},
 		"no-code-api": {
 			"title": "不用打程式呼叫 API",
-			"decription": "一些敘述"
+			"decription": "不用打程式呼叫 API一些敘述"
 		}
 	},
 	"search": "搜尋",
 	"councilor": "委員",
-	"council": "委員會",
 	"conversation": "對話",
+	"committee": "委員會",
 	"library": "圖書館",
-	"member": "成員"
+	"member": "成員",
+	"team": "團隊",
+	"pencil-here": "寫些東西",
+	"create-new-councilor": {
+		"title": "建立新的委員",
+		"description": "委員是...."
+	},
+	"name": "名稱",
+	"base-model": "基底模型",
+	"trait": "特徵",
+	"create-new-team": {
+		"title": "建立新的團隊",
+		"description": "團隊是...."
+	},
+	"email": "電子郵件",
+	"role": "身份",
+	"action": "動作",
+	"log": "記錄",
+	"time": "時間",
+	"delete-team": "刪除團隊",
+	"leave": "離開",
+	"admin": "管理員",
+	"delete": "刪除",
+	"edit": "編輯",
+	"clone": "複製",
+	"ask-it-something": "問問看一些問題吧？",
+	"create-new-committee": {
+		"title": "建立新的委員會",
+		"description": "委員會是...."
+	},
+	"add": "新增",
+	"create-new-library": {
+		"title": "建立新的圖書館",
+		"description": "圖書館是...."
+	},
+	"start-a-conversation": "開始一些對話吧",
+	"content": "寫一些內容"
 }

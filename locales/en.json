@@ -21,25 +21,61 @@
 		"title": "Features",
 		"autonomous": {
 			"title": "Autonomous",
-			"decription": "Some decription"
+			"decription": "Autonomous Some decription"
 		},
 		"reusability": {
 			"title": "Reusability",
-			"decription": "Some decription"
+			"decription": "Reusability Some decription"
 		},
 		"sharable": {
 			"title": "Sharable",
-			"decription": "Some decription"
+			"decription": "Sharable Some decription"
 		},
 		"no-code-api": {
 			"title": "No Code API",
-			"decription": "Some decription"
+			"decription": "No Code API Some decription"
 		}
 	},
 	"search": "Search",
 	"councilor": "Councilor",
-	"council": "Council",
 	"conversation": "Conversation",
+	"committee": "Committee",
 	"library": "Library",
-	"member": "Member"
+	"member": "Member",
+	"team": "Team",
+	"pencil-here": "Pencil here",
+	"create-new-councilor": {
+		"title": "Create new councilor",
+		"description": "Councilor is...."
+	},
+	"name": "name",
+	"base-model": "Base Model",
+	"trait": "Trait",
+	"create-new-team": {
+		"title": "Create new team",
+		"description": "Team is...."
+	},
+	"email": "Email",
+	"role": "Role",
+	"action": "Action",
+	"log": "Log",
+	"time": "Time",
+	"delete-team": "Delete team",
+	"leave": "Leave",
+	"admin": "Admin",
+	"delete": "Delete",
+	"edit": "Edit",
+	"clone": "Clone",
+	"ask-it-something": "Ask It Something?",
+	"create-new-committee": {
+		"title": "Create new committee",
+		"description": "Committee is...."
+	},
+	"add": "Add",
+	"create-new-library": {
+		"title": "Create new library",
+		"description": "Library is...."
+	},
+	"start-a-conversation": "Start a conversation",
+	"content": "Content"
 }
