@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
 	import { t } from "svelte-i18n";
 
-	export let data: PageData;
-
-	const base_model_list = ["GPT3", "GPT3.5", "GPT4"]; // for test
+	const base_model_list = [
+		"gpt-3.5-turbo",
+		"gpt-3.5-turbo-16k",
+		"gpt-3.5-turbo-16k-0613",
+		"gpt-4",
+	]; // for test
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
