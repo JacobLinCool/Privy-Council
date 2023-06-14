@@ -229,7 +229,11 @@ class Conversation {
 	}
 }
 
-export async function start_conversation(input: string, committee_id: number) {
+export async function start_conversation(
+	input: string,
+	committee_id: number,
+	conversation_id: number,
+) {
 	const data = await prisma.committee.findUnique({
 		where: {
 			id: committee_id,
@@ -288,7 +292,17 @@ export async function start_conversation(input: string, committee_id: number) {
 			intermediate_output += work + "\n";
 		});
 
-		return { conversation: conversation_output, intermediate: intermediate_output };
+		// update the conversation
+		await prisma.conversation.update({
+			where: {
+				id: conversation_id,
+			},
+			data: {
+				immediate: intermediate_output,
+				final: conversation_output,
+			},
+		});
+		//return { conversation: conversation_output, intermediate: intermediate_output };
 	} catch {
 		throw new Error("Fail to generate conversation");
 	}
