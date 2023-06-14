@@ -1,16 +1,12 @@
-lockfileVersion: "6.1"
-
-settings:
-    autoInstallPeers: true
-    excludeLinksFromLockfile: false
+lockfileVersion: "6.0"
 
 dependencies:
     "@prisma/client":
         specifier: 4.15.0
         version: 4.15.0(prisma@4.15.0)
     openai:
-        specifier: ^3.2.1
-        version: 3.2.1(debug@4.3.4)
+        specifier: ^3.3.0
+        version: 3.3.0(debug@4.3.4)
 
 devDependencies:
     "@changesets/changelog-github":
@@ -2037,7 +2033,7 @@ packages:
             postcss: ^8.1.0
         dependencies:
             browserslist: 4.21.8
-            caniuse-lite: 1.0.30001502
+            caniuse-lite: 1.0.30001503
             fraction.js: 4.2.0
             normalize-range: 0.1.2
             picocolors: 1.0.0
@@ -2160,8 +2156,8 @@ packages:
         engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
         hasBin: true
         dependencies:
-            caniuse-lite: 1.0.30001502
-            electron-to-chromium: 1.4.428
+            caniuse-lite: 1.0.30001503
+            electron-to-chromium: 1.4.430
             node-releases: 2.0.12
             update-browserslist-db: 1.0.11(browserslist@4.21.8)
         dev: true
@@ -2247,10 +2243,10 @@ packages:
         engines: { node: ">=6" }
         dev: true
 
-    /caniuse-lite@1.0.30001502:
+    /caniuse-lite@1.0.30001503:
         resolution:
             {
-                integrity: sha512-AZ+9tFXw1sS0o0jcpJQIXvFTOB/xGiQ4OQ2t98QX3NDn2EZTSRBC801gxrsGgViuq2ak/NLkNgSNEPtCr5lfKg==,
+                integrity: sha512-Sf9NiF+wZxPfzv8Z3iS0rXM1Do+iOy2Lxvib38glFX+08TCYYYGR5fRJXk4d77C4AYwhUjgYgMsMudbh2TqCKw==,
             }
         dev: true
 
@@ -2906,10 +2902,10 @@ packages:
             }
         dev: true
 
-    /electron-to-chromium@1.4.428:
+    /electron-to-chromium@1.4.430:
         resolution:
             {
-                integrity: sha512-L7uUknyY286of0AYC8CKfgWstD0Smk2DvHDi9F0GWQhSH90Bzi7iDrmCbZKz75tYJxeGSAc7TYeKpmbjMDoh1w==,
+                integrity: sha512-FytjTbGwz///F+ToZ5XSeXbbSaXalsVRXsz2mHityI5gfxft7ieW3HqFLkU5V1aIrY42aflICqbmFoDxW10etg==,
             }
         dev: true
 
@@ -5380,10 +5376,10 @@ packages:
             is-wsl: 2.2.0
         dev: true
 
-    /openai@3.2.1(debug@4.3.4):
+    /openai@3.3.0(debug@4.3.4):
         resolution:
             {
-                integrity: sha512-762C9BNlJPbjjlWZi4WYK9iM2tAVAv0uUp1UmI34vb0CN5T2mjB/qM6RYBmNKMh/dN9fC+bxqPwWJZUTWW052A==,
+                integrity: sha512-uqxI/Au+aPRnsaQRe8CojU0eCR7I0mBiKjD3sNMzY6DaC1ZVrc85u98mtJW6voDug8fgGN+DIZmTDxTthxb7dQ==,
             }
         dependencies:
             axios: 0.26.1(debug@4.3.4)
@@ -7896,3 +7892,7 @@ packages:
                 integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==,
             }
         dev: true
+
+settings:
+    autoInstallPeers: true
+    excludeLinksFromLockfile: false
