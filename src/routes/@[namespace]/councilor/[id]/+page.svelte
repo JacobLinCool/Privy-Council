@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Model from "$lib/component/Model.svelte";
 	import { t } from "svelte-i18n";
+	import Markdown from "svelte-markdown";
 	import Icon from "@iconify/svelte";
 	import type { PageData } from "./$types";
 
@@ -13,6 +14,27 @@
 		// "gpt-3.5-turbo-16k-0613",
 		// "gpt-4",
 	];
+
+	let question = "";
+	let answer = "";
+	let asking = false;
+	async function ask(evt: KeyboardEvent) {
+		if (asking) {
+			return;
+		}
+		if (evt.key !== "Enter") {
+			return;
+		}
+		asking = true;
+		const res = await fetch("/ask", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ question, councilor: data.councilor }),
+		});
+		const { answer: ans } = await res.json();
+		answer = ans;
+		asking = false;
+	}
 </script>
 
 <div class="flex h-full w-full justify-center overflow-auto px-4 py-24">
@@ -52,7 +74,7 @@
 			{:else}
 				<div class="absolute right-0 top-0 z-10 mb-4 flex flex-none flex-row space-x-4">
 					<Model>
-						<button slot="opener" class="btn-outline btn-error btn-square btn">
+						<button slot="opener" class="btn-error btn-outline btn-square btn">
 							<Icon icon="octicon:trash-16" />
 						</button>
 						<div slot="body">
@@ -60,7 +82,7 @@
 								{$t("delete-confirm")}
 							</p>
 							<form method="POST" action="?/delete">
-								<button class="btn-outline btn-error btn">
+								<button class="btn-error btn-outline btn">
 									{$t("i-am-sure")}
 									<Icon icon="octicon:trash-16" />
 								</button>
@@ -103,11 +125,48 @@
 				<h3>{data.councilor.model}</h3>
 				<textarea
 					class="textarea-bordered textarea-ghost textarea w-full"
-					name="bio"
+					name="trait"
 					rows="4"
 					bind:value={data.councilor.trait}
 					disabled
 				/>
+
+				{#if data.user}
+					<div class="divider" />
+
+					<div class="chat chat-start">
+						<div class="chat-bubble">
+							{"Hi! I am a " +
+								data.councilor.name +
+								", and my trait is " +
+								data.councilor.trait +
+								". "}
+						</div>
+					</div>
+					<div class="chat chat-end">
+						<div class="chat-bubble chat-bubble-info">
+							{#if !answer}
+								<input
+									class="input-ghost input input-sm focus:outline-none focus:ring-0"
+									style="--tw-bg-opacity: 0.05; --tw-border-opacity: 0;"
+									bind:value={question}
+									on:keyup={ask}
+									disabled={!!answer || asking}
+									class:animate-pulse={asking}
+								/>
+							{:else}
+								{question}
+							{/if}
+						</div>
+					</div>
+					{#if answer}
+						<div class="chat chat-start">
+							<div class="chat-bubble prose">
+								<Markdown source={answer} />
+							</div>
+						</div>
+					{/if}
+				{/if}
 			{/if}
 		</div>
 	</div>

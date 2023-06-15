@@ -1,8 +1,8 @@
+import { dev } from "$app/environment";
+import { prisma } from "$lib/server/prisma";
 import debug from "debug";
 import { verify, JWT } from "sveltekit-jwt";
 import type { PageServerLoad } from "./$types";
-import { prisma } from "$lib/server/prisma";
-import { dev } from "$app/environment";
 
 const log = debug("app:auth");
 log.enabled = true;

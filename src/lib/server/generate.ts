@@ -1,11 +1,11 @@
-import { Configuration, OpenAIApi } from "openai";
 import { env } from "$env/dynamic/private";
 import { prisma } from "$lib/server/prisma";
+import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
 	apiKey: env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
+export const openai = new OpenAIApi(configuration);
 
 class Councilor {
 	name: string;

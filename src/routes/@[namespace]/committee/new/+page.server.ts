@@ -1,9 +1,9 @@
-import { error, redirect } from "@sveltejs/kit";
-import type { PageServerLoad, Actions } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
 import debug from "debug";
+import { error, redirect, Redirect } from "@sveltejs/kit";
+import type { PageServerLoad, Actions } from "./$types";
 
 const console_log = debug("app:councilor:new");
 
@@ -77,6 +77,10 @@ export const actions: Actions = {
 			log(`Create Committee "${committee.name}"`, locals.user.email, params.namespace);
 			throw redirect(302, `/@${params.namespace}/committee/${committee.id}`);
 		} catch (err) {
+			if (err && typeof err === "object" && "status" in err) {
+				throw err;
+			}
+			console_log(err);
 			throw error(400, "Committee create failed");
 		}
 	},

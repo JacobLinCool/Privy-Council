@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
+import { log } from "$lib/server/log";
 import { prisma } from "$lib/server/prisma";
 import { is_namespace_editable } from "$lib/server/verify";
-import { log } from "$lib/server/log";
+import { redirect } from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	// TODO: Not Sure Frontend
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		throw redirect(302, `/@${params.namespace}`);
 	}
 
-	return conversation;
+	return { conversation };
 };
 
 export const actions: Actions = {
