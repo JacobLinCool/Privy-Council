@@ -30,7 +30,7 @@
 						</td>
 						<td>{member.role}</td>
 						<td class="flex gap-2">
-							{#if member.role === "admin"}
+							{#if data.owned.includes(data.team.namespace_name)}
 								<Model>
 									<button
 										slot="opener"
