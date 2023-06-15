@@ -15,19 +15,19 @@
 	"councilor": "Councilor",
 	"create": "Create",
 	"create-new-committee": {
-		"description": "Committee is....",
+		"description": "You can create a Committee for a specific topic and input questions for the Committee. The Committee will provide you with the results of their discussions and deliberations. Please select multiple existing members who are relevant to the Committee's discussion topic for optimal results. The Committee members can utilize a Library to enhance their expertise. If you wish to use a Library, please add one.\n\n- Name: Committee name\n- Lead: The chairperson who will assign tasks to all Committee members and determine task completion.\n- Members: Committee members who should be chosen based on their relevance to the Committee's topic for maximum effectiveness.",
 		"title": "Create new committee"
 	},
 	"create-new-councilor": {
-		"description": "Councilor is....",
+		"description": "You can establish a Councilor with individual personality traits, allowing Councilors to fulfill their tasks according to their expertise.\n\n- Name: The name of the Councilor, which is crucial and will influence the tasks they receive.(Ex: English Teacher)\n- Base Model: The model chosen for Councilors.\n- Trait: The traits possessed by Councilors, such as \"strict\" or \"outgoing.\"",
 		"title": "Create new councilor"
 	},
 	"create-new-library": {
-		"description": "Library is....",
+		"description": "You can create a Library and add relevant materials in a specific field to enhance the reliability and domain-specificity of the outputs.\n\n- Name: Library name\n- Content: (Entered after creation) Please input domain-specific materials. Enter one set of related content at a time to help Committee members find the most relevant information.",
 		"title": "Create new library"
 	},
 	"create-new-team": {
-		"description": "Team is....",
+		"description": "You can create a Team where all team members will have access to shared resources. You can establish Councilors, Committees, and other entities within the team management interface for the use of all team members.\n\n- Name: Team name",
 		"title": "Create new team"
 	},
 	"delete": "Delete",
