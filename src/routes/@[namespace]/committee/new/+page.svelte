@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { t } from "svelte-i18n";
+	import Markdown from "svelte-markdown";
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
 	let councilor_list = data.councilors!;
+
+	let member_count = 1;
 </script>
 
 <div class="flex h-full w-full items-center justify-center p-4">
-	<div class="w-full max-w-2xl">
+	<div class="w-full max-w-4xl">
 		<div class="prose mb-8">
 			<h1>{$t("create-new-committee.title")}</h1>
 		</div>
@@ -22,22 +25,29 @@
 					<select name="lead" class="select w-full">
 						<option disabled selected />
 						{#each councilor_list as councilor}
-							<option>{councilor.name}</option>
+							<option value={councilor.id}>{councilor.name}</option>
 						{/each}
 					</select>
 				</label>
 				<label>
 					{$t("member")}
-					<select name="member" class="select w-full">
-						<option disabled selected />
-						{#each councilor_list as councilor}
-							<option>{councilor.name}</option>
-						{/each}
-					</select>
+					{#each Array(member_count) as _, i}
+						<select name="member" class="select mb-4 w-full">
+							<option disabled selected />
+							{#each councilor_list as councilor}
+								<option value={councilor.id}>{councilor.name}</option>
+							{/each}
+						</select>
+					{/each}
+					<button type="button" class="btn-primary btn" on:click={() => member_count++}>
+						{$t("add")}
+					</button>
 				</label>
 				<button class="btn-primary btn">{$t("create")}</button>
 			</form>
-			<p class="w-40">{$t("create-new-committee.description")}</p>
+			<div class="prose max-w-sm">
+				<Markdown source={$t("create-new-committee.description")} />
+			</div>
 		</div>
 	</div>
 </div>

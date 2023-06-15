@@ -90,13 +90,17 @@
 				</div>
 
 				<h1>{data.committee.name}</h1>
-				{#each councilor_list as councilor}
-					<div class="badge badge-secondary mx-1">{councilor.name}</div>
+				{#each councilor_list as councilor, i}
+					<div class="badge badge-info mx-1" class:badge-outline={i !== 0}>
+						{councilor.name}
+					</div>
 				{/each}
 
 				<h3>{$t("start-a-conversation")}</h3>
-				<textarea class="textarea-bordered textarea w-full" name="bio" rows="4" />
-				<button class="btn-primary btn">{$t("start")}</button>
+				<form method="POST" action="?/start">
+					<textarea class="textarea-bordered textarea w-full" name="input" rows="4" />
+					<button class="btn-primary btn">{$t("start")}</button>
+				</form>
 			{/if}
 		</div>
 	</div>
