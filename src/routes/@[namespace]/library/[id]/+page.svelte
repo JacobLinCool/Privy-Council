@@ -2,12 +2,25 @@
 	import Model from "$lib/component/Model.svelte";
 	import { t } from "svelte-i18n";
 	import Icon from "@iconify/svelte";
+	import type { Data } from "@prisma/client";
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
 
 	let edit_mode = false;
 	let word_table = data.library.data;
+
+	function del(word: Data) {
+		word_table = word_table.filter((w) => w !== word);
+	}
+
+	let new_data = "";
+	function add() {
+		if (new_data) {
+			word_table = [...word_table, { content: new_data, id: 0, created: new Date() }];
+			new_data = "";
+		}
+	}
 </script>
 
 <div class="flex h-full w-full justify-center overflow-auto px-4 py-24">
@@ -27,11 +40,15 @@
 						<div class="flex flex-none flex-row">
 							<input
 								type="text"
-								name="data_content[]"
+								name="data_content"
 								class="input-bordered input mb-4 w-full text-xl font-bold transition-all hover:input-primary"
-								bind:value={word}
+								bind:value={word.content}
 							/>
-							<button class="btn-error btn-square btn mx-4">
+							<button
+								class="btn-error btn-outline btn-square btn mx-4"
+								type="button"
+								on:click={() => del(word)}
+							>
 								<Icon icon="ph:x" class="ml-1 inline-block" />
 							</button>
 						</div>
@@ -39,12 +56,17 @@
 					<div class="flex flex-none flex-row">
 						<input
 							type="text"
-							name="data_content[]"
+							name="data_content"
 							class="input-bordered input mb-4 w-full text-xl font-bold transition-all hover:input-primary"
 							placeholder={$t("content")}
+							bind:value={new_data}
 						/>
-						<button class="btn-error btn-square btn mx-4">
-							<Icon icon="ph:x" class="ml-1 inline-block" />
+						<button
+							class="btn-info btn-outline btn-square btn mx-4"
+							type="button"
+							on:click={add}
+						>
+							<Icon icon="octicon:plus-16" class="ml-1 inline-block" />
 						</button>
 					</div>
 					<button class="btn-success btn-outline btn">
@@ -107,7 +129,7 @@
 						type="text"
 						name="name"
 						class="input-bordered input mb-4 w-full text-xl font-bold transition-all hover:input-primary"
-						bind:value={word}
+						bind:value={word.content}
 						disabled
 					/>
 				{/each}

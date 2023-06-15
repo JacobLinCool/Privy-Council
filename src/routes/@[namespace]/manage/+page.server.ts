@@ -70,6 +70,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				orderBy: {
 					created: "desc",
 				},
+				include: {
+					committee: {
+						select: {
+							name: true,
+						},
+					},
+				},
 			},
 		},
 	});

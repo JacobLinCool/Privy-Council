@@ -108,6 +108,25 @@
 				{/each}
 			</div>
 		</div>
+		<div>
+			<h2>
+				{$t("conversation")}
+			</h2>
+			<div class="divider" />
+			<div class="carousel w-full space-x-4 p-4">
+				{#each data.namespace.conversations as conversation}
+					<a
+						class="carousel-item card-bordered card card-compact w-56 bg-base-200 no-underline shadow-sm transition-all hover:shadow-md"
+						href="/@{$page.params.namespace}/conversation/{conversation.id}"
+					>
+						<div class="card-body flex flex-col items-center justify-center">
+							<p class="text-lg font-bold">{conversation.id}</p>
+							<p class="text-sm">{conversation.committee.name}</p>
+						</div>
+					</a>
+				{/each}
+			</div>
+		</div>
 		{#if data.namespace.user}
 			<div>
 				<h2>

@@ -65,7 +65,10 @@ export const actions: Actions = {
 
 		//const data_content = ["apple","cherry","durian","eggplant","fig","grape"];
 		const data = await request.formData();
-		const data_content = data.getAll("data_content").map((content) => content.toString());
+		const data_content = data
+			.getAll("data_content")
+			.map((content) => content.toString().substring(0, 1000).trim())
+			.filter((content) => content.length > 0);
 		if (!data_content) {
 			return;
 		}
@@ -86,6 +89,13 @@ export const actions: Actions = {
 			return;
 		}
 
+		const remove_data = library.data.filter((data) => {
+			return !data_content.includes(data.content);
+		});
+		const add_data = data_content.filter((content) => {
+			return !library.data.map((data) => data.content).includes(content);
+		});
+
 		// connect data in data_content
 		await prisma.library.update({
 			where: {
@@ -93,16 +103,10 @@ export const actions: Actions = {
 			},
 			data: {
 				data: {
-					disconnect: library.data
-						.filter((data) => {
-							return !data_content.includes(data.content);
-						})
-						.map((data) => {
-							return {
-								id: data.id,
-							};
-						}),
-					connectOrCreate: data_content.map((content) => {
+					disconnect: remove_data.map((data) => {
+						return { id: data.id };
+					}),
+					connectOrCreate: add_data.map((content) => {
 						return {
 							where: {
 								content: content,
