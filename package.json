@@ -49,7 +49,7 @@
 		"prettier-plugin-tailwindcss": "^0.3.0",
 		"prisma": "^4.15.0",
 		"prisma-zod-generator": "^0.8.13",
-		"svelte": "^3.59.1",
+		"svelte": "^4.0.0",
 		"svelte-check": "^3.4.3",
 		"svelte-i18n": "^3.6.0",
 		"svelte-markdown": "^0.2.3",
