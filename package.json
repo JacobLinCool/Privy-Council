@@ -19,7 +19,7 @@
 		"studio": "prisma studio"
 	},
 	"dependencies": {
-		"@prisma/client": "4.15.0"
+		"@prisma/client": "5.20.0"
 	},
 	"devDependencies": {
 		"@changesets/changelog-github": "^0.4.8",
@@ -47,7 +47,7 @@
 		"prettier": "^2.8.8",
 		"prettier-plugin-svelte": "^2.10.1",
 		"prettier-plugin-tailwindcss": "^0.3.0",
-		"prisma": "^4.15.0",
+		"prisma": "^5.0.0",
 		"prisma-zod-generator": "^0.8.13",
 		"svelte": "^3.59.1",
 		"svelte-check": "^3.4.3",
